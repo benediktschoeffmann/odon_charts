@@ -1,5 +1,7 @@
 import express, { Application } from "express";
 
+import dbpool from '../config/databaseconfig';
+
 const PORT = process.env.PORT || 8000;
 
 const app: Application = express();

@@ -1,4 +1,4 @@
-const mariadb = require('mariadb');
+import mariadb from 'mariadb';
 
 const dbpool = mariadb.createPool({
     host: process.env.DB_HOST,
@@ -8,4 +8,4 @@ const dbpool = mariadb.createPool({
     connectionLimit: 5
 });
 
-module.exports = dbpool;
+export default dbpool;
