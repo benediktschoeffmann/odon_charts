@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, Request, Response} from "express";
 
 import dbpool from "../config/databaseconfig";
 
@@ -12,8 +12,8 @@ app.get("/ping", async (_req, res) => {
   });
 });
 
+//////////////////////SONGS///////////////////////////////////////
 app.get("/api/songs", (_req, res, next) => {
-  console.log("trying to connect")
   dbpool.getConnection().then((conn) =>
     conn
       .query("SELECT * FROM songs")
@@ -24,6 +24,45 @@ app.get("/api/songs", (_req, res, next) => {
         res.status(500).json({
           message: "Error Code 500"
         })
+      })
+      .finally(() => {
+        conn.end();
+    })
+  );
+});
+
+app.get("/api/song", (req, res) => {
+  const songTitle = req.query.title as string;
+
+  if (!songTitle) {
+     res.status(400).json({
+      message: "Valid Title parameter required",
+     });
+    return;
+  }
+
+  dbpool.getConnection().then((conn) =>
+    conn
+      .query(
+        "SELECT title, releaseYear FROM songs WHERE LOWER(title) = LOWER(?)",
+        [songTitle]
+      )
+      .then((result) => {
+        if (result.length > 0) {
+          res.json(result);
+        } else {
+          res.status(404).json({
+            message: "Song not found",
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Internal server error",
+        });
+      })
+      .finally(() => {
+        conn.end();
       })
   );
 });
