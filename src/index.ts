@@ -68,16 +68,15 @@ app.get("/api/song", (req, res) => {
 });
 
 app.get("/api/songs/year/:releaseYear", (req, res) => {
-  const releaseYear = req.params.releaseYear;
+  const releaseYear = parseInt(req.params.releaseYear, 10);
 
-  if (!releaseYear) {
+  if (!Number.isInteger(releaseYear) || ! releaseYear) {
     res.status(400).json({
       message: "Valid parameter required",
     });
     return;
   } 
 
-  console.log(releaseYear)
   dbpool.getConnection().then((conn) =>
     conn
       .query("SELECT * FROM `songs` WHERE `releaseYear` BETWEEN ? AND ?;",
@@ -101,6 +100,44 @@ app.get("/api/songs/year/:releaseYear", (req, res) => {
       })
   );
 })
+
+app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
+  const firstYear = parseInt(req.params.firstYear, 10);
+  const lastYear = parseInt(req.params.lastYear, 10)
+
+  if (!firstYear || !lastYear || !Number.isInteger(firstYear) || !Number.isInteger(lastYear)) {
+    res.status(400).json({
+      message: "Valid parameter required",
+    });
+    return;
+  }
+
+
+  dbpool.getConnection().then((conn) =>
+    conn
+      .query("SELECT * FROM `songs` WHERE `releaseYear` BETWEEN ? AND ?;", [
+        `${firstYear}-01-01`,
+        `${lastYear}-12-31`,
+      ])
+      .then((result) => {
+        if (result.length > 0) {
+          res.json(result);
+        } else {
+          res.status(404).json({
+            message: "Song not found",
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Internal server error",
+        });
+      })
+      .finally(() => {
+        conn.end();
+      })
+  );
+});
 
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
