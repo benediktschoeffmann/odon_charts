@@ -67,6 +67,41 @@ app.get("/api/song", (req, res) => {
   );
 });
 
+app.get("/api/songs/year/:releaseYear", (req, res) => {
+  const releaseYear = req.params.releaseYear;
+
+  if (!releaseYear) {
+    res.status(400).json({
+      message: "Valid parameter required",
+    });
+    return;
+  } 
+
+  console.log(releaseYear)
+  dbpool.getConnection().then((conn) =>
+    conn
+      .query("SELECT * FROM `songs` WHERE `releaseYear` BETWEEN ? AND ?;",
+        [`${releaseYear}-01-01`, `${releaseYear}-12-31`,])
+      .then((result) => {
+        if (result.length > 0) {
+          res.json(result);
+        } else {
+          res.status(404).json({
+            message: "Song not found",
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).json({
+          message: "Internal server error",
+        });
+      })
+      .finally(() => {
+        conn.end();
+      })
+  );
+})
+
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
 });
