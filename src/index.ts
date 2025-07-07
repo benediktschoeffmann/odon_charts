@@ -1,7 +1,8 @@
 import express, { Application, Request, Response} from "express";
 
 import dbpool from "../config/databaseconfig";
-import sendErrorResponse from '../Responses/ErrorMessages';
+import sendErrorResponse from '../Responses/ErrorResponse';
+import Song from '../models/song_model'
 
 const PORT = process.env.PORT || 9000;
 
@@ -17,16 +18,31 @@ app.get("/ping", async (_req, res) => {
 app.get("/api/songs", (_req, res, next) => {
   dbpool.getConnection().then((conn) =>
     conn
-      .query("SELECT * FROM songs")
+      .query(
+        "SELECT songs.ID, songs.title, songs.releaseYear, " +
+        "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
+        "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
+        "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
+        "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
+        "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
+        "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
+        "GROUP BY songs.title;"
+      )
       .then((result) => {
-        res.json(result);
-    })
+        const songs: Song = result.map((row: any) => ({
+          title: row.title,
+          releaseYear: new Date(row.releaseYear).getFullYear(),
+          genres: row.genres ? row.genres.split(',') : [],
+          artists: row.artists ? row.artists.split(',') : []
+        }));
+        res.json({ songs });
+      })
       .catch((err) => {
-        sendErrorResponse(res, 500, err)
+        sendErrorResponse(res, 500, err);
       })
       .finally(() => {
         conn.end();
-    })
+      })
   );
 });
 
@@ -206,6 +222,7 @@ app.get("/api/songs/nationality/:nationality", (req, res) => {
       )
       .then((result) => {
         if (result.length > 0) {
+          res.status(200).json(result)
           res.json(result);
         } else {
           sendErrorResponse(res, 404);
