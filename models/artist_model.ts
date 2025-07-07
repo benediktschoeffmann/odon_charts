@@ -1,4 +1,6 @@
 type Artist = {
-    name: String,
-    nationality: String
-}
+  name: String;
+  nationality: String;
+};
+
+export default Artist

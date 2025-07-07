@@ -1,4 +1,8 @@
-type ChartModule = {
-    song: Song,
-    year: number
-} 
+import Song from "./song_model";
+
+type ChartSong = {
+  song: Song,
+  year: number
+};
+
+export default ChartSong
