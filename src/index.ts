@@ -2,8 +2,8 @@ import express, { Application, Request, Response} from "express";
 
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from '../Responses/ErrorResponse';
-import sendSongRespone from '../Responses/SongResponse';
 import Song from "../models/song_model";
+import {createSongResponse, sendResponse} from '../Responses/SongResponse';
 
 const PORT = process.env.PORT || 9000;
 
@@ -19,6 +19,7 @@ app.get("/ping", async (_req, res) => {
 app.get("/api/songs", (_req, res, next) => {
   dbpool.getConnection().then((conn) => {
     conn
+      //contoller.getAllSongs -> MVC
       .query(
         "SELECT songs.ID, songs.title, songs.releaseYear, " +
           "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
@@ -37,7 +38,8 @@ app.get("/api/songs", (_req, res, next) => {
        //   artists: row.artists ? row.artists.split(",") : [],
        // }));
         // res.json({ songs });
-        sendSongRespone(res, result)
+        const songs = createSongResponse(result);
+        sendResponse(res, songs);
       })
       .catch((err) => {
         sendErrorResponse(res, 500, err);
@@ -52,7 +54,7 @@ app.get("/api/songs", (_req, res, next) => {
     });
 });
 
-app.get("/api/song/title/:title", (req, res) => {
+app.get("/api/songs/title/:title", (req, res) => {
   const songTitle = decodeURIComponent(req.params.title) as string;
 
   if (!songTitle) {
@@ -79,7 +81,7 @@ app.get("/api/song/title/:title", (req, res) => {
         .then((result) => {
           if (result.length > 0) {
             console.log(result);
-            sendSongRespone(res, result);
+           // sendSongRespone(res, result);
           } else {
             sendErrorResponse(res, 404);
           }

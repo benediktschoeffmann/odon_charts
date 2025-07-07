@@ -1,14 +1,18 @@
 import { Response } from "express";
 import Song from '../models/song_model';
 
-const sendSongRespone = (res: Response, result: any) => {
+const createSongResponse = (result: any) => {
   const songs: Song = result.map((row: any) => ({
     title: row.title,
     releaseYear: new Date(row.releaseYear).getFullYear(),
     genres: row.genres ? row.genres.split(",") : [],
     artists: row.artists ? row.artists.split(",") : [],
   }));
-  res.json({ songs });
+    return songs;
 };
 
-export default sendSongRespone
+const sendResponse = (res: Response, data:any) => {
+    res.json(data)
+}
+
+export { createSongResponse, sendResponse }
