@@ -1,7 +1,7 @@
 import express, { Application, Request, Response} from "express";
 
 import dbpool from "../config/databaseconfig";
-import sendErrorResponse from '../Messages/Messages';
+import sendErrorResponse from '../Responses/ErrorMessages';
 
 const PORT = process.env.PORT || 9000;
 
@@ -135,7 +135,6 @@ app.get("/api/songs/artist/:artistName", (req, res) => {
         )
         .then((result) => {
           if (result.length > 0) {
-            console.log("there are some results");
             res.json(result);
           } else {
             sendErrorResponse(res, 404)
@@ -149,6 +148,8 @@ app.get("/api/songs/artist/:artistName", (req, res) => {
         });
   });
 });
+
+
 
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
