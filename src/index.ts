@@ -2,7 +2,7 @@ import express, { Application, Request, Response} from "express";
 
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from '../Responses/ErrorResponse';
-import Song from '../models/song_model'
+import sendSongRespone from '../Responses/SongResponse';
 
 const PORT = process.env.PORT || 9000;
 
@@ -29,13 +29,7 @@ app.get("/api/songs", (_req, res, next) => {
         "GROUP BY songs.title;"
       )
       .then((result) => {
-        const songs: Song = result.map((row: any) => ({
-          title: row.title,
-          releaseYear: new Date(row.releaseYear).getFullYear(),
-          genres: row.genres ? row.genres.split(',') : [],
-          artists: row.artists ? row.artists.split(',') : []
-        }));
-        res.json({ songs });
+        sendSongRespone(res, result)
       })
       .catch((err) => {
         sendErrorResponse(res, 500, err);
