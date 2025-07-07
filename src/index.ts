@@ -1,9 +1,9 @@
-import express, { Application, Request, Response} from "express";
+import express, { Application, Request, Response } from "express";
 
 import dbpool from "../config/databaseconfig";
-import sendErrorResponse from '../Responses/ErrorResponse';
-import Song from "../models/song_model";
-import {createSongResponse, sendResponse} from '../Responses/SongResponse';
+import sendErrorResponse from "../Responses/ErrorResponse";
+import Song from "../models/songModel";
+import { createSongResponse, sendResponse } from "../Responses/SongResponse";
 
 const PORT = process.env.PORT || 9000;
 
@@ -17,40 +17,41 @@ app.get("/ping", async (_req, res) => {
 
 //////////////////////SONGS///////////////////////////////////////
 app.get("/api/songs", (_req, res, next) => {
-  dbpool.getConnection().then((conn) => {
-    conn
-      //contoller.getAllSongs -> MVC
-      .query(
-        "SELECT songs.ID, songs.title, songs.releaseYear, " +
-          "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
-          "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
-          "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
-          "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
-          "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
-          "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
-          "GROUP BY songs.title;"
-      )
-      .then((result) => {
-       // const songs: Song = result.map((row: any) => ({
-       //   title: row.title,
-       //   releaseYear: new Date(row.releaseYear).getFullYear(),
-       //   genres: row.genres ? row.genres.split(",") : [],
-       //   artists: row.artists ? row.artists.split(",") : [],
-       // }));
-        // res.json({ songs });
-        const songs = createSongResponse(result);
-        sendResponse(res, songs);
-      })
-      .catch((err) => {
-        sendErrorResponse(res, 500, err);
-      })
-      .finally(() => {
-        conn.end();
-      });
-  }
-  )
+  dbpool
+    .getConnection()
+    .then((conn) => {
+      conn
+        //contoller.getAllSongs -> MVC
+        .query(
+          "SELECT songs.ID, songs.title, songs.releaseYear, " +
+            "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
+            "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
+            "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
+            "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
+            "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
+            "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
+            "GROUP BY songs.title;"
+        )
+        .then((result) => {
+          // const songs: Song = result.map((row: any) => ({
+          //   title: row.title,
+          //   releaseYear: new Date(row.releaseYear).getFullYear(),
+          //   genres: row.genres ? row.genres.split(",") : [],
+          //   artists: row.artists ? row.artists.split(",") : [],
+          // }));
+          // res.json({ songs });
+          const songs = createSongResponse(result);
+          sendResponse(res, songs);
+        })
+        .catch((err) => {
+          sendErrorResponse(res, 500, err);
+        })
+        .finally(() => {
+          conn.end();
+        });
+    })
     .catch((err) => {
-      sendErrorResponse(res, 500, err)
+      sendErrorResponse(res, 500, err);
     });
 });
 
@@ -81,7 +82,7 @@ app.get("/api/songs/title/:title", (req, res) => {
         .then((result) => {
           if (result.length > 0) {
             console.log(result);
-           // sendSongRespone(res, result);
+            // sendSongRespone(res, result);
           } else {
             sendErrorResponse(res, 404);
           }
@@ -131,7 +132,7 @@ app.get("/api/songs/year/:releaseYear", (req, res) => {
     .catch((err) => {
       sendErrorResponse(res, 500, err);
     });
-})
+});
 
 app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
   const firstYear = parseInt(req.params.firstYear, 10);
@@ -289,7 +290,6 @@ app.get("/api/songs/nationality/:nationality", (req, res) => {
       sendErrorResponse(res, 500, err);
     });
 });
-
 
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);

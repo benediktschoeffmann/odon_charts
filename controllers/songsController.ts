@@ -1,8 +1,8 @@
-import Song from "../models/song_model";
-import dbpool from '../config/databaseconfig';
+import Song from "../models/songModel";
+import dbpool from "../config/databaseconfig";
 
-const getAllSongs =(dbpool) => {
-    dbpool.getConnection().then((conn) => {
-        conn.query()
-    })
-}
+const getAllSongs = (dbpool) => {
+  dbpool.getConnection().then((conn) => {
+    conn.query();
+  });
+};

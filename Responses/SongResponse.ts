@@ -1,5 +1,5 @@
 import { Response } from "express";
-import Song from '../models/song_model';
+import Song from "../models/songModel";
 
 const createSongResponse = (result: any) => {
   const songs: Song = result.map((row: any) => ({
@@ -8,11 +8,11 @@ const createSongResponse = (result: any) => {
     genres: row.genres ? row.genres.split(",") : [],
     artists: row.artists ? row.artists.split(",") : [],
   }));
-    return songs;
+  return songs;
 };
 
-const sendResponse = (res: Response, data:any) => {
-    res.json(data)
-}
+const sendResponse = (res: Response, data: any) => {
+  res.json(data);
+};
 
-export { createSongResponse, sendResponse }
+export { createSongResponse, sendResponse };
