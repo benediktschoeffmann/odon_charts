@@ -8,7 +8,6 @@ const sendSongRespone = (res: Response, result: any) => {
     genres: row.genres ? row.genres.split(",") : [],
     artists: row.artists ? row.artists.split(",") : [],
   }));
-
   res.json({ songs });
 };
 

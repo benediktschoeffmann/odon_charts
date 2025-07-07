@@ -3,6 +3,7 @@ import express, { Application, Request, Response} from "express";
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from '../Responses/ErrorResponse';
 import sendSongRespone from '../Responses/SongResponse';
+import Song from "../models/song_model";
 
 const PORT = process.env.PORT || 9000;
 
@@ -29,7 +30,14 @@ app.get("/api/songs", (_req, res, next) => {
           "GROUP BY songs.title;"
       )
       .then((result) => {
-        sendSongRespone(res, result);
+       // const songs: Song = result.map((row: any) => ({
+       //   title: row.title,
+       //   releaseYear: new Date(row.releaseYear).getFullYear(),
+       //   genres: row.genres ? row.genres.split(",") : [],
+       //   artists: row.artists ? row.artists.split(",") : [],
+       // }));
+        // res.json({ songs });
+        sendSongRespone(res, result)
       })
       .catch((err) => {
         sendErrorResponse(res, 500, err);
@@ -57,12 +65,21 @@ app.get("/api/song/title/:title", (req, res) => {
     .then((conn) => {
       conn
         .query(
-          "SELECT title, releaseYear FROM songs WHERE LOWER(title) = LOWER(?)",
+          //"SELECT title, releaseYear FROM songs WHERE LOWER(title) = LOWER(?)",
+          "SELECT songs.title, songs.releaseYear, " +
+            "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
+            "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
+            "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
+            "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
+            "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
+            "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
+            "WHERE songs.title = '?';",
           [songTitle]
         )
         .then((result) => {
           if (result.length > 0) {
-            res.json(result);
+            console.log(result);
+            sendSongRespone(res, result);
           } else {
             sendErrorResponse(res, 404);
           }
