@@ -35,6 +35,7 @@ app.get("/api/song/title/:title", (req, res) => {
 
   if (!songTitle) {
     sendErrorResponse(res, 400);
+    return;
   }
 
   dbpool.getConnection().then((conn) =>
@@ -63,7 +64,8 @@ app.get("/api/songs/year/:releaseYear", (req, res) => {
   const releaseYear = parseInt(req.params.releaseYear, 10);
 
   if (!Number.isInteger(releaseYear) || ! releaseYear) {
-    sendErrorResponse(res, 400)
+    sendErrorResponse(res, 400);
+    return;
   } 
 
   dbpool.getConnection().then((conn) =>
@@ -91,7 +93,8 @@ app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
   const lastYear = parseInt(req.params.lastYear, 10);
 
   if (!firstYear || !lastYear || !Number.isInteger(firstYear) || !Number.isInteger(lastYear)) {
-    sendErrorResponse(res, 400)
+    sendErrorResponse(res, 400);
+    return;
   }
 
 
@@ -121,13 +124,14 @@ app.get("/api/songs/artist/:artistName", (req, res) => {
   const artistName = decodeURIComponent(req.params.artistName) as string;
 
   if (!artistName) {
-    sendErrorResponse(res, 400)
+    sendErrorResponse(res, 400);
+    return;
   }
 
   dbpool.getConnection().then((conn) => {
       conn
         .query(
-          "SELECT title, releaseYear FROM `songs` " +
+          "SELECT DISTINCT title, releaseYear FROM `songs` " +
             "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
             "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
             "WHERE LOWER(artists.name) = LOWER(?);",
@@ -137,11 +141,11 @@ app.get("/api/songs/artist/:artistName", (req, res) => {
           if (result.length > 0) {
             res.json(result);
           } else {
-            sendErrorResponse(res, 404)
+            sendErrorResponse(res, 404);
           }
         })
         .catch((err) => {
-          sendErrorResponse(res, 500, err)
+          sendErrorResponse(res, 500, err);
         })
         .finally(() => {
           conn.end();
@@ -149,17 +153,18 @@ app.get("/api/songs/artist/:artistName", (req, res) => {
   });
 });
 
-app.get("api/songs/genre/:genre", (req, res) => {
+app.get("/api/songs/genre/:genre", (req, res) => {
   const songGenre = decodeURIComponent(req.params.genre) as string;
 
   if (!songGenre) {
-    sendErrorResponse(res, 400)
+    sendErrorResponse(res, 400);
+    return;
   }
 
   dbpool.getConnection().then((conn) => {
     conn
       .query(
-        "SELECT title, releaseYear FROM `songs` " +
+        "SELECT DISTINCT title, releaseYear FROM `songs` " +
         "INNER JOIN songs_genres ON songs.ID = songs_genres.songID " +
         "INNER JOIN genres ON songs_genres.genreID = genres.ID " +
         "WHERE LOWER(genres.description) = LOWER(?);",
@@ -181,6 +186,39 @@ app.get("api/songs/genre/:genre", (req, res) => {
   });
 });
 
+app.get("/api/songs/nationality/:nationality", (req, res) => {
+  const nationality = req.params.nationality as string;
+
+  if (!nationality || nationality.length > 2) {
+    sendErrorResponse(res, 400);
+    return;
+  }
+
+  dbpool.getConnection().then((conn) => {
+    conn
+      .query(
+        "SELECT DISTINCT songs.title, songs.releaseYear FROM songs " +
+        "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
+        "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
+        "INNER JOIN nationalities ON artists.nationalityID = nationalities.ID " +
+        "WHERE LOWER(nationalities.description) = LOWER(?);",
+        [nationality]
+      )
+      .then((result) => {
+        if (result.length > 0) {
+          res.json(result);
+        } else {
+          sendErrorResponse(res, 404);
+        }
+      })
+      .catch((err) => {
+        sendErrorResponse(res, 500, err);
+      })
+      .finally(() => {
+        conn.end();
+      });
+  });
+});
 
 
 app.listen(PORT, () => {
