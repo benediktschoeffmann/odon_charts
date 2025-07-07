@@ -11,8 +11,8 @@ const createSongResponse = (result: any) => {
   return songs;
 };
 
-const sendResponse = (res: Response, data: any) => {
+const sendSongResponse = (res: Response, data: any) => {
   res.json(data);
 };
 
-export { createSongResponse, sendResponse };
+export { createSongResponse, sendSongResponse };

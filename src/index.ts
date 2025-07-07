@@ -3,7 +3,7 @@ import express, { Application, Request, Response } from "express";
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import Song from "../models/songModel";
-import { createSongResponse, sendResponse } from "../Responses/SongResponse";
+import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
 
 const PORT = process.env.PORT || 9000;
 
@@ -39,9 +39,9 @@ app.get("/api/songs", (_req, res, next) => {
           //   genres: row.genres ? row.genres.split(",") : [],
           //   artists: row.artists ? row.artists.split(",") : [],
           // }));
-          // res.json({ songs });
           const songs = createSongResponse(result);
-          sendResponse(res, songs);
+          // res.json({ songs });
+          sendSongResponse(res, songs);
         })
         .catch((err) => {
           sendErrorResponse(res, 500, err);
