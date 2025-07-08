@@ -9,7 +9,7 @@ const generalSongController = (
   res: Response,
   dbpool: Pool,
   query: string,
-  searchPara?
+  searchPara?: string | number
 ) => {
   dbpool
     .getConnection()
