@@ -4,7 +4,7 @@ import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import Song from "../models/songModel";
 import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
-import {getAllSongsController, getSongsFromTitleController} from "../controllers/songsController"
+import {getAllSongsController, getSongsBetweenYearController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
 
 const PORT = process.env.PORT || 9000;
 
@@ -29,7 +29,7 @@ app.get("/api/songs/title/:title", (req, res) => {
     return;
   }
 
-  getSongsFromTitleController(res, dbpool, [songTitle])
+  getSongsFromTitleController(res, dbpool, songTitle)
 });
 
 app.get("/api/songs/year/:releaseYear", (req, res) => {
@@ -40,31 +40,7 @@ app.get("/api/songs/year/:releaseYear", (req, res) => {
     return;
   }
 
-  dbpool
-    .getConnection()
-    .then((conn) => {
-      conn
-        .query(
-          "SELECT title, releaseYear FROM `songs` WHERE  `releaseYear` BETWEEN ? AND ?;",
-          [`${releaseYear}-01-01`, `${releaseYear}-12-31`]
-        )
-        .then((result) => {
-          if (result.length > 0) {
-            res.json(result);
-          } else {
-            sendErrorResponse(res, 404);
-          }
-        })
-        .catch((err) => {
-          sendErrorResponse(res, 500, err);
-        })
-        .finally(() => {
-          conn.end();
-        });
-    })
-    .catch((err) => {
-      sendErrorResponse(res, 500, err);
-    });
+  getSongsFromYearController(res, dbpool, releaseYear)
 });
 
 app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
@@ -81,31 +57,7 @@ app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
     return;
   }
 
-  dbpool
-    .getConnection()
-    .then((conn) => {
-      conn
-        .query(
-          "SELECT title, releaseYear FROM `songs` WHERE `releaseYear` BETWEEN ? AND ?;",
-          [`${firstYear}-01-01`, `${lastYear}-12-31`]
-        )
-        .then((result) => {
-          if (result.length > 0) {
-            res.json(result);
-          } else {
-            sendErrorResponse(res, 404);
-          }
-        })
-        .catch((err) => {
-          sendErrorResponse(res, 500, err);
-        })
-        .finally(() => {
-          conn.end();
-        });
-    })
-    .catch((err) => {
-      sendErrorResponse(res, 500, err);
-    });
+  getSongsBetweenYearController(res, dbpool, firstYear, lastYear)
 });
 
 app.get("/api/songs/artist/:artistName", (req, res) => {
