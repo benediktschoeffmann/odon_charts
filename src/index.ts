@@ -4,7 +4,7 @@ import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import Song from "../models/songModel";
 import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
-import {getAllSongsController, getSongsBetweenYearController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
+import {getAllSongsController, getSongsBetweenYearController, getSongsFromArtistController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
 
 const PORT = process.env.PORT || 9000;
 
@@ -40,7 +40,7 @@ app.get("/api/songs/year/:releaseYear", (req, res) => {
     return;
   }
 
-  getSongsFromYearController(res, dbpool, releaseYear)
+  getSongsFromYearController(res, dbpool, releaseYear);
 });
 
 app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
@@ -57,7 +57,7 @@ app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
     return;
   }
 
-  getSongsBetweenYearController(res, dbpool, firstYear, lastYear)
+  getSongsBetweenYearController(res, dbpool, firstYear, lastYear);
 });
 
 app.get("/api/songs/artist/:artistName", (req, res) => {
@@ -68,34 +68,7 @@ app.get("/api/songs/artist/:artistName", (req, res) => {
     return;
   }
 
-  dbpool
-    .getConnection()
-    .then((conn) => {
-      conn
-        .query(
-          "SELECT DISTINCT title, releaseYear FROM `songs` " +
-            "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
-            "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
-            "WHERE LOWER(artists.name) = LOWER(?);",
-          [artistName]
-        )
-        .then((result) => {
-          if (result.length > 0) {
-            res.json(result);
-          } else {
-            sendErrorResponse(res, 404);
-          }
-        })
-        .catch((err) => {
-          sendErrorResponse(res, 500, err);
-        })
-        .finally(() => {
-          conn.end();
-        });
-    })
-    .catch((err) => {
-      sendErrorResponse(res, 500, err);
-    });
+  getSongsFromArtistController(res, dbpool, artistName);
 });
 
 app.get("/api/songs/genre/:genre", (req, res) => {
