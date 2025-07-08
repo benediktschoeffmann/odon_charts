@@ -12,7 +12,7 @@ const createSongResponse = (result: any) => {
 };
 
 const sendSongResponse = (res: Response, data: any) => {
-  res.json(data);
+  res.status(200).json(data);
 };
 
 export { createSongResponse, sendSongResponse };
