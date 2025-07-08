@@ -69,8 +69,8 @@ const getSongsFromArtistController = (res: Response, dbpool: Pool, artistName: s
   generalSongController(res, dbpool, "WHERE LOWER(artists.name) = LOWER(?) ", [artistName]);
 }
 
-const getSongsFromGenreController = (res: Response, dbpool: Pool, releaseYear: number) => {
-  
+const getSongsFromGenreController = (res: Response, dbpool: Pool, genre: string) => {
+  generalSongController(res, dbpool, "WHERE LOWER(genres.description) = LOWER(?) ", [genre])
 }
 
 export {
@@ -78,5 +78,6 @@ export {
   getSongsFromTitleController,
   getSongsFromYearController,
   getSongsBetweenYearController,
-  getSongsFromArtistController
+  getSongsFromArtistController,
+  getSongsFromGenreController
 };

@@ -4,7 +4,7 @@ import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import Song from "../models/songModel";
 import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
-import {getAllSongsController, getSongsBetweenYearController, getSongsFromArtistController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
+import {getAllSongsController, getSongsBetweenYearController, getSongsFromArtistController, getSongsFromGenreController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
 
 const PORT = process.env.PORT || 9000;
 
@@ -79,34 +79,7 @@ app.get("/api/songs/genre/:genre", (req, res) => {
     return;
   }
 
-  dbpool
-    .getConnection()
-    .then((conn) => {
-      conn
-        .query(
-          "SELECT DISTINCT title, releaseYear FROM `songs` " +
-            "INNER JOIN songs_genres ON songs.ID = songs_genres.songID " +
-            "INNER JOIN genres ON songs_genres.genreID = genres.ID " +
-            "WHERE LOWER(genres.description) = LOWER(?);",
-          [songGenre]
-        )
-        .then((result) => {
-          if (result.length > 0) {
-            res.json(result);
-          } else {
-            sendErrorResponse(res, 404);
-          }
-        })
-        .catch((err) => {
-          sendErrorResponse(res, 500, err);
-        })
-        .finally(() => {
-          conn.end();
-        });
-    })
-    .catch((err) => {
-      sendErrorResponse(res, 500, err);
-    });
+  getSongsFromGenreController(res, dbpool, songGenre)
 });
 
 app.get("/api/songs/nationality/:nationality", (req, res) => {
