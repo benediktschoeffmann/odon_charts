@@ -76,13 +76,14 @@ app.get("/api/songs/title/:title", (req, res) => {
             "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
             "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
             "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
-            "WHERE songs.title = '?';",
+            "WHERE LOWER(songs.title) = LOWER(?);",
           [songTitle]
         )
         .then((result) => {
           if (result.length > 0) {
             console.log(result);
-            // sendSongRespone(res, result);
+            const songs = createSongResponse(result);
+            sendSongResponse(res, songs);
           } else {
             sendErrorResponse(res, 404);
           }
