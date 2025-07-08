@@ -4,7 +4,7 @@ import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import Song from "../models/songModel";
 import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
-import { generalSongController } from "../controllers/songsController"
+import {getAllSongsController} from "../controllers/songsController"
 
 const PORT = process.env.PORT || 9000;
 
@@ -18,18 +18,7 @@ app.get("/ping", async (_req, res) => {
 
 //////////////////////SONGS///////////////////////////////////////
 app.get("/api/songs", (_req, res, next) => {
-  generalSongController(
-    res,
-    dbpool,
-    "SELECT songs.ID, songs.title, songs.releaseYear, " +
-      "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
-      "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
-      "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
-      "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
-      "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
-      "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
-      "GROUP BY songs.title;"
-  );
+  getAllSongsController(res, dbpool);
   //  dbpool
   //    .getConnection()
   //    .then((conn) => {

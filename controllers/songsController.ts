@@ -3,6 +3,7 @@ import { Pool } from "mariadb/*";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
 import { Response } from "express";
+import dbpool from '../config/databaseconfig';
 
 
 const generalSongController = (
@@ -18,7 +19,6 @@ const generalSongController = (
         .query(query, searchPara && [searchPara])
         .then((result) => {
           if (result.length > 0) {
-            console.log(result);
             const songs = createSongResponse(result);
             sendSongResponse(res, songs);
           } else {
@@ -30,6 +30,7 @@ const generalSongController = (
         })
         .finally(() => {
           conn.end();
+          return
         });
     })
     .catch((err) => {
@@ -37,4 +38,19 @@ const generalSongController = (
     });
 };
 
-export { generalSongController };
+const getAllSongsController = (res: Response, dbpool: Pool) => {
+  generalSongController(
+    res,
+    dbpool,
+    "SELECT songs.ID, songs.title, songs.releaseYear, " +
+      "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
+      "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
+      "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
+      "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
+      "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
+      "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
+      "GROUP BY songs.title;"
+  );
+};
+
+export { generalSongController, getAllSongsController};
