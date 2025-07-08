@@ -6,13 +6,20 @@ const ErrorMessages: Record<number, string> = {
   500: "Server error",
 };
 
-const sendErrorResponse = (res: Response, statusCode: keyof typeof ErrorMessages, error?: any) => {
-  error && console.log(error);
+const sendErrorResponse = (res: Response, statusCode: keyof typeof ErrorMessages, errorDescription?: any) => {
+  errorDescription && console.log(errorDescription);
   const errorMessage = ErrorMessages[statusCode] || "An Error occured";
 
-  res.status(statusCode).json({
-    message: errorMessage,
-  });
+  if (errorDescription) {
+    res.status(statusCode).json({
+      message: errorMessage,
+      error: errorDescription,
+    });
+  } else {
+    res.status(statusCode).json({
+      message: errorMessage,
+    });
+  }
 };
 
 
