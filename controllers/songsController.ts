@@ -36,3 +36,5 @@ const generalSongController = (
       sendErrorResponse(res, 500, err);
     });
 };
+
+export { generalSongController };
