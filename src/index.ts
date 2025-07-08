@@ -29,7 +29,7 @@ app.get("/api/songs/title/:title", (req, res) => {
     return;
   }
 
-  getSongsFromTitleController(res, dbpool, songTitle)
+  getSongsFromTitleController(res, dbpool, [songTitle])
 });
 
 app.get("/api/songs/year/:releaseYear", (req, res) => {

@@ -10,13 +10,13 @@ const generalSongController = (
   res: Response,
   dbpool: Pool,
   query: string,
-  searchPara?: string | number
+  searchPara?: (string | number)[]
 ) => {
   dbpool
     .getConnection()
     .then((conn) => {
       conn
-        .query(query, searchPara && [searchPara])
+        .query(query, searchPara && searchPara)
         .then((result) => {
           if (result.length > 0) {
             const songs = createSongResponse(result);
@@ -53,7 +53,7 @@ const getAllSongsController = (res: Response, dbpool: Pool) => {
   );
 };
 
-const getSongsFromTitleController = (res: Response, dbpool: Pool, songTitle: string) => {
+const getSongsFromTitleController = (res: Response, dbpool: Pool, songTitle: string[]) => {
   generalSongController(
     res,
     dbpool,
