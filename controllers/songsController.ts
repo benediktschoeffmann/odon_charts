@@ -53,4 +53,23 @@ const getAllSongsController = (res: Response, dbpool: Pool) => {
   );
 };
 
-export { generalSongController, getAllSongsController};
+const getSongsFromTitleController = (res: Response, dbpool: Pool, songTitle: string) => {
+  generalSongController(
+    res,
+    dbpool,
+    "SELECT songs.title, songs.releaseYear, " +
+      "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
+      "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
+      "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
+      "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
+      "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
+      "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
+      "WHERE LOWER(songs.title) = LOWER(?) " +
+      "GROUP BY songs.title;",
+    songTitle
+  );
+};
+
+
+
+export { getAllSongsController, getSongsFromTitleController};
