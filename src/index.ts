@@ -2,9 +2,20 @@ import express, { Application, Request, Response } from "express";
 
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
-import Song from "../models/songModel";
-import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
-import {getAllSongsController, getSongsBetweenYearController, getSongsFromArtistController, getSongsFromGenreController, getSongsFromNationalityController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
+import Song from "../schemas/songSchema";
+import {
+  createSongResponse,
+  sendSongResponse,
+} from "../Responses/SongResponse";
+import {
+  getAllSongsController,
+  getSongsBetweenYearController,
+  getSongsFromArtistController,
+  getSongsFromGenreController,
+  getSongsFromNationalityController,
+  getSongsFromTitleController,
+  getSongsFromYearController,
+} from "../controllers/songsController";
 
 const PORT = process.env.PORT || 9000;
 
@@ -29,7 +40,7 @@ app.get("/api/songs/title/:title", (req, res) => {
     return;
   }
 
-  getSongsFromTitleController(res, dbpool, songTitle)
+  getSongsFromTitleController(res, dbpool, songTitle);
 });
 
 app.get("/api/songs/year/:releaseYear", (req, res) => {
@@ -79,7 +90,7 @@ app.get("/api/songs/genre/:genre", (req, res) => {
     return;
   }
 
-  getSongsFromGenreController(res, dbpool, songGenre)
+  getSongsFromGenreController(res, dbpool, songGenre);
 });
 
 app.get("/api/songs/nationality/:nationality", (req, res) => {

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import Song from "../models/songModel";
+import Song from "../schemas/songSchema";
 
 const createSongResponse = (result: any) => {
   const songs: Song = result.map((row: any) => ({

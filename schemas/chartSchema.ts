@@ -1,4 +1,4 @@
-import Song from "./song_model";
+import Song from "./songSchema";
 
 type ChartSong = {
   song: Song,

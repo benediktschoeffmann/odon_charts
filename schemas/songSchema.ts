@@ -1,4 +1,4 @@
-import Artist from "./artistModel";
+import Artist from "./artistSchema";
 
 type Song = {
   title: String;
