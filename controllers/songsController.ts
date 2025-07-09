@@ -23,9 +23,10 @@ const generalSongController = (
             "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
             "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
             "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
+            "INNER JOIN nationalities ON artists.nationalityID = nationalities.ID " +
             whereStatement +
-            " GROUP BY songs.title;" ,
-            searchPara && searchPara
+            " GROUP BY songs.title;",
+          searchPara && searchPara
         )
         .then((result) => {
           if (result.length > 0) {
@@ -69,14 +70,25 @@ const getSongsFromArtistController = (res: Response, dbpool: Pool, artistName: s
   generalSongController(
     res,
     dbpool,
-    "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID WHERE LOWER(artists.name) = LOWER(?))",
+    "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID WHERE LOWER(artists.name) = LOWER(?)) ",
     [artistName]
   );
 }
 
 const getSongsFromGenreController = (res: Response, dbpool: Pool, genre: string) => {
-  generalSongController(res, dbpool, "WHERE LOWER(genres.description) = LOWER(?) ", [genre])
+  generalSongController(
+    res,
+    dbpool,
+    "WHERE songs.ID IN (SELECT songs_genres.songID FROM songs_genres INNER JOIN genres ON songs_genres.genreID = genres.ID WHERE LOWER(genres.description) = LOWER(?))",
+    [genre]
+  );
 }
+
+const getSongsFromNationalityController = (res: Response, dbpool: Pool, nationality: string) => {
+  generalSongController(res, dbpool, "WHERE LOWER(nationalities.description) =  LOWER(?)", [nationality])
+}
+
+
 
 export {
   getAllSongsController,
@@ -84,5 +96,6 @@ export {
   getSongsFromYearController,
   getSongsBetweenYearController,
   getSongsFromArtistController,
-  getSongsFromGenreController
+  getSongsFromGenreController,
+  getSongsFromNationalityController
 };

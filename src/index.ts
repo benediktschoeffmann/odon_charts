@@ -4,7 +4,7 @@ import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import Song from "../models/songModel";
 import { createSongResponse, sendSongResponse } from "../Responses/SongResponse";
-import {getAllSongsController, getSongsBetweenYearController, getSongsFromArtistController, getSongsFromGenreController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
+import {getAllSongsController, getSongsBetweenYearController, getSongsFromArtistController, getSongsFromGenreController, getSongsFromNationalityController, getSongsFromTitleController, getSongsFromYearController} from "../controllers/songsController"
 
 const PORT = process.env.PORT || 9000;
 
@@ -90,36 +90,7 @@ app.get("/api/songs/nationality/:nationality", (req, res) => {
     return;
   }
 
-  dbpool
-    .getConnection()
-    .then((conn) => {
-      conn
-        .query(
-          "SELECT DISTINCT songs.title, songs.releaseYear FROM songs " +
-            "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
-            "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
-            "INNER JOIN nationalities ON artists.nationalityID = nationalities.ID " +
-            "WHERE LOWER(nationalities.description) = LOWER(?);",
-          [nationality]
-        )
-        .then((result) => {
-          if (result.length > 0) {
-            res.status(200).json(result);
-            res.json(result);
-          } else {
-            sendErrorResponse(res, 404);
-          }
-        })
-        .catch((err) => {
-          sendErrorResponse(res, 500, err);
-        })
-        .finally(() => {
-          conn.end();
-        });
-    })
-    .catch((err) => {
-      sendErrorResponse(res, 500, err);
-    });
+  getSongsFromNationalityController(res, dbpool, nationality);
 });
 
 app.listen(PORT, () => {
