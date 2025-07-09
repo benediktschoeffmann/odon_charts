@@ -50,39 +50,6 @@ app.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
   getSongsBetweenYearController(res, dbpool, firstYear, lastYear);
 });
 
-app.get("/api/songs/artist/:artistName", (req, res) => {
-  const artistName = decodeURIComponent(req.params.artistName) as string;
-
-  if (!artistName) {
-    sendErrorResponse(res, 400);
-    return;
-  }
-
-  getSongsFromArtistController(res, dbpool, artistName);
-});
-
-app.get("/api/songs/genre/:genre", (req, res) => {
-  const songGenre = decodeURIComponent(req.params.genre) as string;
-
-  if (!songGenre) {
-    sendErrorResponse(res, 400);
-    return;
-  }
-
-  getSongsFromGenreController(res, dbpool, songGenre);
-});
-
-app.get("/api/songs/nationality/:nationality", (req, res) => {
-  const nationality = req.params.nationality as string;
-
-  if (!nationality || nationality.length > 2) {
-    sendErrorResponse(res, 400);
-    return;
-  }
-
-  getSongsFromNationalityController(res, dbpool, nationality);
-});
-
 app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
 });
