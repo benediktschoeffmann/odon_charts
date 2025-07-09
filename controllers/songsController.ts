@@ -133,4 +133,5 @@ export {
   getSongsFromArtistController,
   getSongsFromGenreController,
   getSongsFromNationalityController,
+  generalSongController,
 };
