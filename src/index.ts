@@ -2,11 +2,6 @@ import express, { Application, Request, Response } from "express";
 
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
-import Song from "../schemas/songSchema";
-import {
-  createSongResponse,
-  sendSongResponse,
-} from "../Responses/SongResponse";
 import {
   getAllSongsController,
   getSongsBetweenYearController,
@@ -20,12 +15,9 @@ import {
 const PORT = process.env.PORT || 9000;
 
 const app: Application = express();
+const songsRouter = require("../routes/songsRoutes")
 
-app.get("/ping", async (_req, res) => {
-  res.send({
-    message: "pong",
-  });
-});
+app.use(songsRouter);
 
 //////////////////////SONGS///////////////////////////////////////
 app.get("/api/songs", (_req, res, next) => {
