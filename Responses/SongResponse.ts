@@ -2,12 +2,14 @@ import { Response } from "express";
 import Song from "../schemas/songSchema";
 import { title } from "process";
 import Artist from '../schemas/artistSchema';
-import * as z from "zod/v4"
+import * as z from "zod/v4";
+type Artist = z.infer<typeof Artist>
+type Song = z.infer<typeof Song>
 
 const createSongResponse = (result: any) => {
-  const songs = result.map((row: any) => {
+  const songs: Song[] = result.map((row: any) => {
     const artistsNames: string[] = row.artists ? row.artists.split(",") : [];
-    const artists = artistsNames.map((artistName) =>
+    const artists: Artist[] = artistsNames.map((artistName) =>
       Artist.parse({
         name: artistName,
         nationality: row.nationality,
@@ -25,8 +27,8 @@ const createSongResponse = (result: any) => {
   return songs;
 };
 
-const sendSongResponse = (res: Response, data: any) => {
-  res.status(200).json(data);
+const sendSongResponse = (res: Response, songs: Song[]) => {
+  res.status(200).json({songs});
 };
 
 export { createSongResponse, sendSongResponse };
