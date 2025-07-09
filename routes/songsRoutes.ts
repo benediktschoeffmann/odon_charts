@@ -16,9 +16,12 @@ const baseUrl: string = "/api/songs";
 
 const generalSongRoute = (url: string, controller: any, searchParaDesc?: string, ifStatement?: (para: any) => boolean) => {
     router.get(baseUrl + url, (req, res) => {
-      let searchPara: any | undefined = undefined;
+      let searchPara: string | number | undefined = undefined;
       if (searchParaDesc) {
           searchPara = decodeURI(req.params[searchParaDesc]);
+          if (!isNaN(+searchPara)) {
+              searchPara = Number(searchPara)
+          }
         if (ifStatement && ifStatement(searchPara)) {
           sendErrorResponse(res, 400);
           return;
@@ -30,11 +33,11 @@ const generalSongRoute = (url: string, controller: any, searchParaDesc?: string,
 }
 
 generalSongRoute("", getAllSongsController);
-generalSongRoute("/title/:title", getSongsFromTitleController, "title", (params) => {
-    return !params
+generalSongRoute("/title/:title", getSongsFromTitleController, "title", (para) => {
+    return !para
 })
-generalSongRoute("/api/songs/year/:year", getSongsFromYearController, "year", (para) => {
-    return !para || !Number.isInteger(para)
+generalSongRoute("/year/:year", getSongsFromYearController, "year", (para) => {
+    return (!Number.isInteger(para))
 });
 
 //router.get(baseUrl + "/title/:title", (req, res) => {
