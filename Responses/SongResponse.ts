@@ -15,7 +15,6 @@ const createSongResponse = (result: any) => {
         nationality: row.nationality,
       })
     );
-    console.log(artists)
     return Song.parse({
       title: row.title,
       releaseYear: new Date(row.releaseYear).getFullYear(),

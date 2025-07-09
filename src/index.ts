@@ -20,20 +20,6 @@ const songsRouter = require("../routes/songsRoutes")
 app.use(songsRouter);
 
 //////////////////////SONGS///////////////////////////////////////
-app.get("/api/songs", (_req, res, next) => {
-  getAllSongsController(res, dbpool);
-});
-
-app.get("/api/songs/title/:title", (req, res) => {
-  const songTitle = decodeURIComponent(req.params.title) as string;
-
-  if (!songTitle) {
-    sendErrorResponse(res, 400);
-    return;
-  }
-
-  getSongsFromTitleController(res, dbpool, songTitle);
-});
 
 app.get("/api/songs/year/:releaseYear", (req, res) => {
   const releaseYear = parseInt(req.params.releaseYear, 10);
