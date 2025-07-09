@@ -8,8 +8,8 @@ import dbpool from '../config/databaseconfig';
 const generalSongController = (
   res: Response,
   dbpool: Pool,
-  searchStatement: string,
-  searchPara?: (string | number)[]
+  whereStatement: string,
+  searchPara?: (string | number)[],
 ) => {
   dbpool
     .getConnection()
@@ -23,9 +23,9 @@ const generalSongController = (
             "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
             "INNER JOIN songs_genres songs_genres ON songs.ID = songs_genres.songID " +
             "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
-            searchStatement +
-            " GROUP BY songs.title;",
-          searchPara && searchPara
+            whereStatement +
+            " GROUP BY songs.title;" ,
+            searchPara && searchPara
         )
         .then((result) => {
           if (result.length > 0) {
@@ -66,7 +66,12 @@ const getSongsFromYearController = (res: Response, dbpool: Pool, releaseYear: nu
 };
 
 const getSongsFromArtistController = (res: Response, dbpool: Pool, artistName: string) => {
-  generalSongController(res, dbpool, "WHERE LOWER(artists.name) = LOWER(?) ", [artistName]);
+  generalSongController(
+    res,
+    dbpool,
+    "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID WHERE LOWER(artists.name) = LOWER(?))",
+    [artistName]
+  );
 }
 
 const getSongsFromGenreController = (res: Response, dbpool: Pool, genre: string) => {
