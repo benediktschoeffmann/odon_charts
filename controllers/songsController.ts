@@ -19,7 +19,7 @@ const generalSongController = (
     .then((conn) => {
       conn
         .query(
-          "SELECT songs.title, songs.releaseYear, " +
+          "SELECT songs.title, songs.releaseYear, nationalities.description AS nationality, " +
             "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
             "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
             "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +

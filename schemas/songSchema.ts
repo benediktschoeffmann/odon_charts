@@ -5,9 +5,10 @@ const Song = z.object({
   title: z.string().trim(),
   releaseYear: z.number(),
   genres: z.array(z.string()),
-  artists: z.array(Artist).nonempty({
-    message: "A song must have at leaste one artist"
-  })
+  //artists: z.array(Artist).nonempty({
+  //  message: "A song must have at leaste one artist"
+  //})
+  artists: z.array(Artist)
 })
 
 export default Song
