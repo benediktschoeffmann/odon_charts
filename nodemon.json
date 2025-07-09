@@ -1,5 +1,5 @@
 {
-    "watch": ["src"],
+    "watch": ["src", "controllers"],
     "ext": "js,ts,json",
     "ignore": ["src/**/*.test.ts"],
     "exec": "ts-node ./src/index.ts"
