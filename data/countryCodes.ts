@@ -249,3 +249,5 @@ const countryCodes: string[] = [
   "ZM",
   "ZW",
 ];
+
+export default countryCodes;
