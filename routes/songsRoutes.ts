@@ -44,7 +44,9 @@ generalSongRoute("/year/:year", getSongsFromYearController, "year", (para) => {
 });
 generalSongRoute("/artist/:artist", getSongsFromArtistController, "artist");
 generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre");
-generalSongRoute("/nationality/:nationality", getSongsFromNationalityController, "nationality");
+generalSongRoute("/nationality/:nationality", getSongsFromNationalityController, "nationality", (para) => {
+  return (!para || para.length > 2)
+});
 
 //router.get(baseUrl + "/title/:title", (req, res) => {
 //  const songTitle = decodeURIComponent(req.params.title) as string;
