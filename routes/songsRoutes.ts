@@ -19,6 +19,10 @@ const generalSongRoute = (url: string, controller: any, searchParaDesc?: string,
     router.get(baseUrl + url, (req, res) => {
       let searchPara: string | number | undefined = undefined;
       if (searchParaDesc) {
+        if (!req.params[searchParaDesc]) {
+          sendErrorResponse(res, 400);
+          return
+        }
           searchPara = decodeURI(req.params[searchParaDesc]);
           if (!isNaN(+searchPara)) {
               searchPara = Number(searchPara)
@@ -60,5 +64,11 @@ generalSongRoute("/nationality/:nationality", getSongsFromNationalityController,
 //
 //  getSongsFromTitleController(res, dbpool, songTitle);
 //});
+
+router.use(baseUrl, (req, res) => {
+  res.status(404).json({
+    message: "Endpoint not found",
+  });
+});
 
 module.exports = router;
