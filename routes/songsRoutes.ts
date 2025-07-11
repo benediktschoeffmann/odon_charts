@@ -38,21 +38,13 @@ const generalSongRoute = (url: string, controller: any, searchParaDesc?: string,
 }
 
 generalSongRoute("", getAllSongsController);
-generalSongRoute("/title/:title", getSongsFromTitleController, "title", (para) => {
-    return !para
-})
+generalSongRoute("/title/:title", getSongsFromTitleController, "title")
 generalSongRoute("/year/:year", getSongsFromYearController, "year", (para) => {
     return (!Number.isInteger(para))
 });
-generalSongRoute("/artist/:artist", getSongsFromArtistController, "artist", (para) => {
-    return !para
-});
-generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre", (para) => {
-    return !para
-});
-generalSongRoute("/nationality/:nationality", getSongsFromNationalityController, "nationality", (para) => {
-    return (!para || para.length > 2 || !countryCodes.includes(para))
-});
+generalSongRoute("/artist/:artist", getSongsFromArtistController, "artist");
+generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre");
+generalSongRoute("/nationality/:nationality", getSongsFromNationalityController, "nationality");
 
 //router.get(baseUrl + "/title/:title", (req, res) => {
 //  const songTitle = decodeURIComponent(req.params.title) as string;
