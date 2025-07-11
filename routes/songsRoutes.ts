@@ -1,6 +1,7 @@
 import {Router} from "express";
 import dbpool from "../config/databaseconfig";
 import sendErrorResponse from "../Responses/ErrorResponse";
+import countryCodes from '../data/countryCodes';
 import {
   getAllSongsController,
   getSongsBetweenYearController,
@@ -46,7 +47,7 @@ generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre", (para) =
     return !para
 });
 generalSongRoute("/nationality/:nationality", getSongsFromNationalityController, "nationality", (para) => {
-    return (!para || para.length > 2)
+    return (!para || para.length > 2 || !countryCodes.includes(para))
 });
 
 //router.get(baseUrl + "/title/:title", (req, res) => {
