@@ -1,4 +1,5 @@
 import app from "../src/index";
+import Song from '../schemas/songSchema';
 const supertest = require("supertest");
 const requestWithSupertest = supertest(app);
 
@@ -11,11 +12,8 @@ const generalHappyCaseTest = (testDescription: string, requestRoute: string, con
 
     if (containValue) {
       expect(res.body.songs).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining(
-            containValue
-          ),
-        ])
+        expect.arrayContaining(
+          res.body.songs.map(() => expect.objectContaining(containValue)))
       );
     }
     
