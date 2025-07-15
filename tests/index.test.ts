@@ -1,5 +1,4 @@
 import app from "../src/index";
-import Song from '../schemas/songSchema';
 const supertest = require("supertest");
 const requestWithSupertest = supertest(app);
 
@@ -20,10 +19,10 @@ const generalHappyCaseTest = (testDescription: string, requestRoute: string, con
   })
 }
 
+
 describe("Testing index file", () => {
   describe("Happy cases", () => {
     generalHappyCaseTest("GET /api/songs should return all songs", "/api/songs")
-
     generalHappyCaseTest(
       "GET /api/songs/title/:title should return songs with specific title",
       "/api/songs/title/We%20Will%20Rock%20you",
@@ -65,4 +64,27 @@ describe("Testing index file", () => {
       }
     );
   })
+
+  describe("Error cases", () => {
+    it("Should return 404 when parameter isn't set", async () => {
+      const res = await requestWithSupertest.get("/api/songs/genre");
+      expect(res.status).toEqual(404);
+      expect(res.type).toEqual(expect.stringContaining("json"));
+      expect(res.body).toMatchObject({
+        message: "Endpoint not found"
+      });
+    })
+
+    it("Should return 404 when result is empty", async () => {
+      const res = await requestWithSupertest.get("/api/songs/year/0000");
+      expect(res.status).toEqual(404);
+      expect(res.type).toEqual(expect.stringContaining("json"));
+      expect(res.body).toEqual(
+        expect.objectContaining({
+          message: "Resource not found"
+        })
+      );
+    })
+  })
+
 });
