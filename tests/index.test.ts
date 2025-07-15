@@ -79,20 +79,47 @@ describe("Testing index file", () => {
   })
 
   describe("Error cases", () => {
-    generalErrorCaseTest(
-      "Should return 404 when parameter isn't set",
-      "/api/songs/genre",
-      404,
-      "Endpoint not found"
-    );
-    generalErrorCaseTest(
-      "Should return 404 when there is no result",
-      "/api/songs/year/0001",
-      404,
-      "Resource not found"
-    );
-
+    describe("404 Error Cases", () => {
+      generalErrorCaseTest(
+        "Should return 404 when parameter isn't set",
+        "/api/songs/genre",
+        404,
+        "Endpoint not found"
+      );
+      generalErrorCaseTest(
+        "Should return 404 when there is no result",
+        "/api/songs/year/0001",
+        404,
+        "Resource not found"
+      );
+      generalErrorCaseTest(
+        "Should return 404 when using invalid url",
+        "/asdf",
+        404,
+        "Endpoint not found"
+      );
+    })
     
+    describe("400 Error Cases", () => {
+      generalErrorCaseTest(
+        "Should return 400 when nationality parameter is too long",
+        "/api/songs/nationality/ABC",
+        400,
+        "Invalid request"
+      );
+      generalErrorCaseTest(
+        "Should return 400 when nationality parameter dosn't exists in ISO-2 Country Code table",
+        "/api/songs/nationality/HI",
+        400,
+        "Invalid request"
+      );
+    })
+    generalErrorCaseTest(
+      "Should return 400 when trying to use string for year",
+      "api/songs/year/asdf",
+      400,
+      "Invalid request"
+    );
   })
 
 });
