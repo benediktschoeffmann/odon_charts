@@ -116,7 +116,7 @@ describe("Testing index file", () => {
     })
     generalErrorCaseTest(
       "Should return 400 when trying to use string for year",
-      "api/songs/year/asdf",
+      "/api/songs/year/asdf",
       400,
       "Invalid request"
     );
