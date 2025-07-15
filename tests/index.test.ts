@@ -19,6 +19,19 @@ const generalHappyCaseTest = (testDescription: string, requestRoute: string, con
   })
 }
 
+const generalErrorCaseTest = (testDescription: string, requstRoute: string, statusCode: number, errorMessage: string) => {
+  it(testDescription, async () => {
+    const res = await requestWithSupertest.get(requstRoute);
+    expect(res.status).toEqual(statusCode);
+    expect(res.type).toEqual(expect.stringContaining("json"));
+
+    expect(res.body).toEqual(
+      expect.objectContaining({
+        message: errorMessage
+      })
+    )
+  })
+}
 
 describe("Testing index file", () => {
   describe("Happy cases", () => {
