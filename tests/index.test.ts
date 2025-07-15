@@ -79,25 +79,20 @@ describe("Testing index file", () => {
   })
 
   describe("Error cases", () => {
-    it("Should return 404 when parameter isn't set", async () => {
-      const res = await requestWithSupertest.get("/api/songs/genre");
-      expect(res.status).toEqual(404);
-      expect(res.type).toEqual(expect.stringContaining("json"));
-      expect(res.body).toMatchObject({
-        message: "Endpoint not found"
-      });
-    })
+    generalErrorCaseTest(
+      "Should return 404 when parameter isn't set",
+      "/api/songs/genre",
+      404,
+      "Endpoint not found"
+    );
+    generalErrorCaseTest(
+      "Should return 404 when there is no result",
+      "/api/songs/year/0001",
+      404,
+      "Resource not found"
+    );
 
-    it("Should return 404 when result is empty", async () => {
-      const res = await requestWithSupertest.get("/api/songs/year/0000");
-      expect(res.status).toEqual(404);
-      expect(res.type).toEqual(expect.stringContaining("json"));
-      expect(res.body).toEqual(
-        expect.objectContaining({
-          message: "Resource not found"
-        })
-      );
-    })
+    
   })
 
 });

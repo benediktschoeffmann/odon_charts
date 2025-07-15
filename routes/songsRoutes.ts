@@ -59,7 +59,7 @@ generalSongRoute("/nationality/:nationality", getSongsFromNationalityController,
 //  getSongsFromTitleController(res, dbpool, songTitle);
 //});
 
-router.use(baseUrl, (req, res) => {
+router.use("/", (req, res) => {
   res.status(404).json({
     message: "Endpoint not found",
   });
