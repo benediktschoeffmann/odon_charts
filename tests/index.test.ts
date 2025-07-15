@@ -31,35 +31,40 @@ describe("Testing index file", () => {
       "/api/songs/title/We%20Will%20Rock%20you",
       {title: "We Will Rock you"},
     );
-
-    generalHappyCaseTest
-
-    it("GET /api/songs/nationality/:nationality should return all songs where artist has specific nationality", async () => {
-      const res = await requestWithSupertest.get("/api/songs/nationality/AT");
-      expect(res.status).toEqual(200);
-      expect(res.type).toEqual(expect.stringContaining("json"));
-      expect(res.body).toHaveProperty("songs");
-
-      //const hasExpectedNationality: boolean = res.body.songs.every((song: any) => {
-      //    return song.artists.every((artist: any) => {
-      //      return artist.nationality === "AT";
-      //    });
-      //  }
-      //);
-      //expect(hasExpectedNationality).toBe(true);
-
-      expect(res.body.songs).toEqual(
-        expect.arrayContaining([
+    generalHappyCaseTest(
+      "GET /api/songs/year/:year should return all songs from specific year",
+      "/api/songs/year/1970",
+      {releaseYear: 1970}
+    );
+    generalHappyCaseTest(
+      "GET /api/songs/artist/:artist should retuntn all songs from specific artist",
+      "/api/songs/artist/falco",
+      {
+        artists: expect.arrayContaining([
           expect.objectContaining({
-            artists: expect.arrayContaining([
-              expect.objectContaining({
-                nationality: "AT"
-              })
-            ])
-          })
+          name: "Falco"
+        })
+      ])}
+    )
+    generalHappyCaseTest(
+      "GET /api/songs/genre/:genre should return all songs from specific genre",
+      "/api/songs/genre/pop",
+      {
+        genres: expect.arrayContaining([
+          "Pop"
         ])
-      )
-
-    });
+      }
+    )
+    generalHappyCaseTest(
+      "GET /api/songs/nationality/:nationality should return all songs where artist has specific nationality",
+      "/api/songs/nationality/AT",
+      {
+        artists: expect.arrayContaining([
+          expect.objectContaining({
+            nationality: "AT",
+          }),
+        ]),
+      }
+    );
   })
 });
