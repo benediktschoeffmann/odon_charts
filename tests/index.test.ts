@@ -5,7 +5,8 @@ const requestWithSupertest = supertest(app);
 const generalHappyCaseTest = (
   testDescription: string,
   requestRoute: string,
-  containValue?: object
+  containValue?: object,
+  antiContainValue?: object
 ) => {
   it(testDescription, async () => {
     const res = await requestWithSupertest.get(requestRoute);
@@ -17,6 +18,13 @@ const generalHappyCaseTest = (
       expect(res.body.songs).toEqual(
         expect.arrayContaining(
           res.body.songs.map(() => expect.objectContaining(containValue))
+        )
+      );
+    }
+    if (antiContainValue) {
+      expect(res.body.songs).toEqual(
+        expect.not.arrayContaining(
+          res.body.songs.map(() => expect.objectContaining(antiContainValue))
         )
       );
     }
@@ -42,19 +50,6 @@ const generalErrorCaseTest = (
   });
 };
 
-// describe("testing", () => {
-//   test('is it a json'), () => {
-//     expect
-//   }
-
-// })
-
-test("json output", () => {
-  let json = '{"name" : "Benni"}';
-  let response = JSON.stringify({ name: "Benni" });
-  //expect(json).toMatchJSON(response);
-});
-
 describe("Testing index file", () => {
   describe("Happy cases", () => {
     generalHappyCaseTest(
@@ -64,7 +59,8 @@ describe("Testing index file", () => {
     generalHappyCaseTest(
       "GET /api/songs/title/:title should return songs with specific title",
       "/api/songs/title/We%20Will%20Rock%20you",
-      { title: "We Will Rock you" }
+      { title: "We Will Rock you" },
+      { title: "Awarakadawara" }
     );
     generalHappyCaseTest(
       "GET /api/songs/year/:year should return all songs from specific year",
@@ -121,7 +117,7 @@ describe("Testing index file", () => {
     describe("400 Error Cases", () => {
       generalErrorCaseTest(
         "Should return 400 when parameter isn't set",
-        "/api/songs/genre",
+        "/api/songs/title",
         400,
         "Parameter isn't set"
       );
@@ -139,7 +135,7 @@ describe("Testing index file", () => {
       );
       generalErrorCaseTest(
         "Should return 400 when year parameter is too low",
-        "api/songs/year/499",
+        "/api/songs/year/499",
         400,
         "Invalid request"
       )

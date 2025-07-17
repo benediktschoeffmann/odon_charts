@@ -24,7 +24,7 @@ const generalSongRoute = (
   router.get(baseUrl + url, (req, res) => {
     let searchPara: string | number | undefined = undefined;
     if (searchParaDesc) {
-      if (!req.params[searchParaDesc]) {
+      if (!req.params[searchParaDesc] || req.params[searchParaDesc] === null) {
         sendErrorResponse(res, 400);
         return;
       }
