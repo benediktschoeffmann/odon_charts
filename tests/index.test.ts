@@ -126,6 +126,12 @@ describe("Testing index file", () => {
         "Parameter isn't set"
       );
       generalErrorCaseTest(
+        "Should return 400 when lenght of title is over 200",
+        "/api/songs/year/asdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaasasdffdsaas1",
+        400,
+        "Invalid request"
+      );
+      generalErrorCaseTest(
         "Should return 400 when trying to use string for year",
         "/api/songs/year/asdf",
         400,

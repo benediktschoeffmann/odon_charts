@@ -43,17 +43,17 @@ const generalSongRoute = (
 };
 
 generalSongRoute("", getAllSongsController);
-generalSongRoute("/title/:title", getSongsFromTitleController, "title");
+generalSongRoute("/title/:title", getSongsFromTitleController, "title", (para) => {
+  const paraString: string = para.toString();
+  return !(paraString.length < 200)
+});
 generalSongRoute("/year/:year", getSongsFromYearController, "year", (para) => {
   const currentYear = new Date().getFullYear();
   return !Number.isInteger(para) || !(500 < para) || !(para < currentYear);
 });
 generalSongRoute("/artist/:artist", getSongsFromArtistController, "artist");
 generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre");
-generalSongRoute(
-  "/nationality/:nationality",
-  getSongsFromNationalityController,
-  "nationality",
+generalSongRoute("/nationality/:nationality", getSongsFromNationalityController, "nationality",
   (para) => {
     return !para || para.length > 2 || !countryCodes.includes(para);
   }
