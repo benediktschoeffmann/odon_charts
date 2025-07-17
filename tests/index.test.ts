@@ -17,14 +17,11 @@ const generalHappyCaseTest = (
     if (containValue) {
       expect(res.body.songs).toEqual(
         expect.arrayContaining(
-          res.body.songs.map(() => expect.objectContaining(containValue))
-        )
-      );
-    }
-    if (antiContainValue) {
-      expect(res.body.songs).toEqual(
-        expect.not.arrayContaining(
-          res.body.songs.map(() => expect.objectContaining(antiContainValue))
+          res.body.songs.map((song: any) => {
+            expect(song).toEqual(expect.objectContaining(containValue));
+            if (antiContainValue) expect(song).toEqual(expect.not.objectContaining(antiContainValue));
+            return song;
+          })
         )
       );
     }
@@ -65,7 +62,8 @@ describe("Testing index file", () => {
     generalHappyCaseTest(
       "GET /api/songs/year/:year should return all songs from specific year",
       "/api/songs/year/1970",
-      { releaseYear: 1970 }
+      { releaseYear: 1970 },
+      { releaseYear: 2017}
     );
     generalHappyCaseTest(
       "GET /api/songs/artist/:artist should retuntn all songs from specific artist",
@@ -74,6 +72,9 @@ describe("Testing index file", () => {
         artists: expect.arrayContaining([
           expect.objectContaining({
             name: "Falco",
+          }),
+          expect.not.objectContaining({
+            name: "Ernst Molden",
           }),
         ]),
       }
