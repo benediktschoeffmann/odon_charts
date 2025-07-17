@@ -1,4 +1,4 @@
-import Song from "../schemas/songSchema";
+import Song from "../../schemas/songSchema";
 import { Pool } from "mariadb/*";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import {
@@ -6,7 +6,7 @@ import {
   sendSongResponse,
 } from "../Responses/SongResponse";
 import { Response } from "express";
-import dbpool from "../config/databaseconfig";
+import dbpool from "../../config/database";
 
 const generalSongController = (
   res: Response,

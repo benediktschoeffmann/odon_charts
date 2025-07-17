@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 
-import dbpool from "../config/databaseconfig";
-import sendErrorResponse from "../Responses/ErrorResponse";
+import dbpool from "../config/database";
+import sendErrorResponse from "./Responses/ErrorResponse";
 import {
   getAllSongsController,
   getSongsBetweenYearController,
@@ -10,17 +10,16 @@ import {
   getSongsFromNationalityController,
   getSongsFromTitleController,
   getSongsFromYearController,
-} from "../controllers/songsController";
+} from "./controllers/songsController";
 
 const PORT = process.env.PORT || 9000;
 
 const app: Application = express();
-const songsRouter = require("../routes/songsRoutes")
+const songsRouter = require("../routes/songsRoutes");
 
 app.use(songsRouter);
 
 //////////////////////SONGS///////////////////////////////////////
-
 
 //app.get("/api/songs/year/:releaseYear", (req, res) => {
 //  const releaseYear = parseInt(req.params.releaseYear, 10);

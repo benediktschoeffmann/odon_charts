@@ -2,7 +2,11 @@ import app from "../src/index";
 const supertest = require("supertest");
 const requestWithSupertest = supertest(app);
 
-const generalHappyCaseTest = (testDescription: string, requestRoute: string, containValue?: object) => {
+const generalHappyCaseTest = (
+  testDescription: string,
+  requestRoute: string,
+  containValue?: object
+) => {
   it(testDescription, async () => {
     const res = await requestWithSupertest.get(requestRoute);
     expect(res.status).toEqual(200);
@@ -12,14 +16,19 @@ const generalHappyCaseTest = (testDescription: string, requestRoute: string, con
     if (containValue) {
       expect(res.body.songs).toEqual(
         expect.arrayContaining(
-          res.body.songs.map(() => expect.objectContaining(containValue)))
+          res.body.songs.map(() => expect.objectContaining(containValue))
+        )
       );
     }
-    
-  })
-}
+  });
+};
 
-const generalErrorCaseTest = (testDescription: string, requstRoute: string, statusCode: number, errorMessage: string) => {
+const generalErrorCaseTest = (
+  testDescription: string,
+  requstRoute: string,
+  statusCode: number,
+  errorMessage: string
+) => {
   it(testDescription, async () => {
     const res = await requestWithSupertest.get(requstRoute);
     expect(res.status).toEqual(statusCode);
@@ -27,24 +36,40 @@ const generalErrorCaseTest = (testDescription: string, requstRoute: string, stat
 
     expect(res.body).toEqual(
       expect.objectContaining({
-        message: errorMessage
+        message: errorMessage,
       })
-    )
-  })
-}
+    );
+  });
+};
+
+// describe("testing", () => {
+//   test('is it a json'), () => {
+//     expect
+//   }
+
+// })
+
+test("json output", () => {
+  let json = '{"name" : "Benni"}';
+  let response = JSON.stringify({ name: "Benni" });
+  //expect(json).toMatchJSON(response);
+});
 
 describe("Testing index file", () => {
   describe("Happy cases", () => {
-    generalHappyCaseTest("GET /api/songs should return all songs", "/api/songs")
+    generalHappyCaseTest(
+      "GET /api/songs should return all songs",
+      "/api/songs"
+    );
     generalHappyCaseTest(
       "GET /api/songs/title/:title should return songs with specific title",
       "/api/songs/title/We%20Will%20Rock%20you",
-      {title: "We Will Rock you"},
+      { title: "We Will Rock you" }
     );
     generalHappyCaseTest(
       "GET /api/songs/year/:year should return all songs from specific year",
       "/api/songs/year/1970",
-      {releaseYear: 1970}
+      { releaseYear: 1970 }
     );
     generalHappyCaseTest(
       "GET /api/songs/artist/:artist should retuntn all songs from specific artist",
@@ -52,19 +77,18 @@ describe("Testing index file", () => {
       {
         artists: expect.arrayContaining([
           expect.objectContaining({
-          name: "Falco"
-        })
-      ])}
-    )
+            name: "Falco",
+          }),
+        ]),
+      }
+    );
     generalHappyCaseTest(
       "GET /api/songs/genre/:genre should return all songs from specific genre",
       "/api/songs/genre/pop",
       {
-        genres: expect.arrayContaining([
-          "Pop"
-        ])
+        genres: expect.arrayContaining(["Pop"]),
       }
-    )
+    );
     generalHappyCaseTest(
       "GET /api/songs/nationality/:nationality should return all songs where artist has specific nationality",
       "/api/songs/nationality/AT",
@@ -76,7 +100,7 @@ describe("Testing index file", () => {
         ]),
       }
     );
-  })
+  });
 
   describe("Error cases", () => {
     describe("404 Error Cases", () => {
@@ -98,8 +122,8 @@ describe("Testing index file", () => {
         404,
         "Endpoint not found"
       );
-    })
-    
+    });
+
     describe("400 Error Cases", () => {
       generalErrorCaseTest(
         "Should return 400 when nationality parameter is too long",
@@ -113,13 +137,12 @@ describe("Testing index file", () => {
         400,
         "Invalid request"
       );
-    })
+    });
     generalErrorCaseTest(
       "Should return 400 when trying to use string for year",
       "/api/songs/year/asdf",
       400,
       "Invalid request"
     );
-  })
-
+  });
 });
