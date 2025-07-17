@@ -105,12 +105,6 @@ describe("Testing index file", () => {
   describe("Error cases", () => {
     describe("404 Error Cases", () => {
       generalErrorCaseTest(
-        "Should return 404 when parameter isn't set",
-        "/api/songs/genre",
-        404,
-        "Endpoint not found"
-      );
-      generalErrorCaseTest(
         "Should return 404 when there is no result",
         "/api/songs/year/0001",
         404,
@@ -125,6 +119,12 @@ describe("Testing index file", () => {
     });
 
     describe("400 Error Cases", () => {
+      generalErrorCaseTest(
+        "Should return 400 when parameter isn't set",
+        "/api/songs/genre",
+        400,
+        "Parameter isn't set"
+      );
       generalErrorCaseTest(
         "Should return 400 when nationality parameter is too long",
         "/api/songs/nationality/ABC",

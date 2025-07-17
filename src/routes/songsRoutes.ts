@@ -45,7 +45,7 @@ const generalSongRoute = (
 generalSongRoute("", getAllSongsController);
 generalSongRoute("/title/:title", getSongsFromTitleController, "title");
 generalSongRoute("/year/:year", getSongsFromYearController, "year", (para) => {
-  return !Number.isInteger(para);
+  return !Number.isInteger(para) || !(500 < para) || !(para < new Date().getFullYear);
 });
 generalSongRoute("/artist/:artist", getSongsFromArtistController, "artist");
 generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre");
@@ -69,14 +69,15 @@ generalSongRoute(
 //  getSongsFromTitleController(res, dbpool, songTitle);
 //});
 
+router.use(baseUrl, (req, res) => {
+  res.status(400).json({
+    message: "Parameter isn't set",
+  });
+});
+
 router.use("/", (req, res) => {
   res.status(404).json({
     message: "Endpoint not found",
-  });
-});
-router.use(baseUrl, (req, res) => {
-  res.status(400).json({
-    message: "No parameters given",
   });
 });
 

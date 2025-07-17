@@ -1,4 +1,4 @@
-import Song from "../../schemas/songSchema";
+import Song from "../schemas/songSchema";
 import { Pool } from "mariadb/*";
 import sendErrorResponse from "../Responses/ErrorResponse";
 import {
