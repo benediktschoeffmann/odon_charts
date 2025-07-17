@@ -106,7 +106,7 @@ describe("Testing index file", () => {
     describe("404 Error Cases", () => {
       generalErrorCaseTest(
         "Should return 404 when there is no result",
-        "/api/songs/year/0001",
+        "/api/songs/title/cxy,baewhi",
         404,
         "Resource not found"
       );
@@ -126,6 +126,18 @@ describe("Testing index file", () => {
         "Parameter isn't set"
       );
       generalErrorCaseTest(
+        "Should return 400 when trying to use string for year",
+        "/api/songs/year/asdf",
+        400,
+        "Invalid request"
+      );
+      generalErrorCaseTest(
+        "Should return 400 when year parameter is too low",
+        "api/songs/year/499",
+        400,
+        "Invalid request"
+      )
+      generalErrorCaseTest(
         "Should return 400 when nationality parameter is too long",
         "/api/songs/nationality/ABC",
         400,
@@ -138,11 +150,5 @@ describe("Testing index file", () => {
         "Invalid request"
       );
     });
-    generalErrorCaseTest(
-      "Should return 400 when trying to use string for year",
-      "/api/songs/year/asdf",
-      400,
-      "Invalid request"
-    );
   });
 });

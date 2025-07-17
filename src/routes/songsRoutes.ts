@@ -45,7 +45,8 @@ const generalSongRoute = (
 generalSongRoute("", getAllSongsController);
 generalSongRoute("/title/:title", getSongsFromTitleController, "title");
 generalSongRoute("/year/:year", getSongsFromYearController, "year", (para) => {
-  return !Number.isInteger(para) || !(500 < para) || !(para < new Date().getFullYear);
+  const currentYear = new Date().getFullYear();
+  return !Number.isInteger(para) || !(500 < para) || !(para < currentYear);
 });
 generalSongRoute("/artist/:artist", getSongsFromArtistController, "artist");
 generalSongRoute("/genre/:genre", getSongsFromGenreController, "genre");
