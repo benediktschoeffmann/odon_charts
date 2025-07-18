@@ -1,10 +1,10 @@
 import Song from "../schemas/songSchema";
 import { Pool } from "mariadb/*";
-import sendErrorResponse from "../Responses/ErrorResponse";
+import sendErrorResponse from "../responses/errorResponse";
 import {
   createSongResponse,
   sendSongResponse,
-} from "../Responses/SongResponse";
+} from "../responses/songResponse";
 import { Response } from "express";
 
 const generalSongController = (
@@ -16,7 +16,8 @@ const generalSongController = (
   dbpool
     .getConnection()
     .then((conn) => {
-      conn.query(
+      conn
+        .query(
           "SELECT songs.title, songs.releaseYear, " +
             "GROUP_CONCAT( DISTINCT CONCAT(artists.name, ' (', nationalities.description, ')') ORDER BY artists.name ) as artistsWithNationalities," +
             "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +

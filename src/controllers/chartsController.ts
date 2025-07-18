@@ -1,5 +1,5 @@
 import { Pool } from "mariadb/*";
-import sendErrorResponse from "../Responses/ErrorResponse";
+import sendErrorResponse from "../responses/errorResponse";
 import { Response } from "express";
 
 const generalChartController = (
