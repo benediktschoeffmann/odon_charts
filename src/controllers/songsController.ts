@@ -6,7 +6,6 @@ import {
   sendSongResponse,
 } from "../Responses/SongResponse";
 import { Response } from "express";
-import dbpool from "../../config/database";
 
 const generalSongController = (
   res: Response,
@@ -17,8 +16,7 @@ const generalSongController = (
   dbpool
     .getConnection()
     .then((conn) => {
-      conn
-        .query(
+      conn.query(
           "SELECT songs.title, songs.releaseYear, " +
             "GROUP_CONCAT( DISTINCT CONCAT(artists.name, ' (', nationalities.description, ')') ORDER BY artists.name ) as artistsWithNationalities," +
             "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
