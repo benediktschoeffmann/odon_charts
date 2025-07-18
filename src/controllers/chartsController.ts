@@ -1,6 +1,12 @@
 import { Pool } from "mariadb/*";
 import sendErrorResponse from "../responses/errorResponse";
+import {
+  createChartResponse,
+  sendChartResponse,
+} from "../responses/chartResponse";
 import { Response } from "express";
+import dbpool from '../../config/database';
+
 
 const generalChartController = (
   res: Response,
@@ -29,8 +35,8 @@ const generalChartController = (
         )
         .then((result) => {
           if (result.length > 0) {
-            //   const chart = createChartResponse(result);
-            //   sendChartResponse(res, chart);
+            const chart = createChartResponse(result);
+            sendChartResponse(res, chart);
           } else {
             sendErrorResponse(res, 404);
           }
@@ -47,3 +53,8 @@ const generalChartController = (
       sendErrorResponse(res, 500, err);
     });
 };
+
+
+const getAllChartsController = (res: Response, dbpool: Pool) => {
+  generalChartController(res, dbpool, "");
+}

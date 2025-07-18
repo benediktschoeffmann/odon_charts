@@ -32,8 +32,8 @@ const createChartResponse = (result: any) => {
     return charts;
 };
 
-const sendChartResonse = (res: Response, charts: Chart[]) => {
+const sendChartResponse = (res: Response, charts: Chart[]) => {
     res.status(200).json({ charts });
 }
 
-export { createChartResponse, sendChartResonse}
+export { createChartResponse, sendChartResponse}
