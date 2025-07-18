@@ -59,16 +59,27 @@ generalSongRoute("/nationality/:nationality", getSongsFromNationalityController,
   }
 );
 
-//router.get(baseUrl + "/title/:title", (req, res) => {
-//  const songTitle = decodeURIComponent(req.params.title) as string;
-//
-//  if (!songTitle) {
-//    sendErrorResponse(res, 400);
-//    return;
-//  }
-//
-//  getSongsFromTitleController(res, dbpool, songTitle);
-//});
+router.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
+  const firstYear = parseInt(req.params.firstYear, 10);
+  const lastYear = parseInt(req.params.lastYear, 10);
+  const currentYear = new Date().getFullYear();
+  if (
+    !firstYear ||
+    !lastYear ||
+    !Number.isInteger(firstYear) ||
+    !Number.isInteger(lastYear) ||
+    (500 > firstYear) ||
+    (500 > lastYear) ||
+    (firstYear > currentYear) ||
+    (lastYear > currentYear)||
+    (lastYear < firstYear)
+  ) {
+    sendErrorResponse(res, 400);
+    return;
+  }
+
+  getSongsBetweenYearController(res, dbpool, firstYear, lastYear);
+});
 
 router.use(baseUrl, (req, res) => {
   res.status(400).json({
