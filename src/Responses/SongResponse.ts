@@ -23,13 +23,12 @@ const createSongResponse = (result: any) => {
       genres: row.genres ? row.genres.split(",") : [],
       artists: artists,
     });
-  }
-  );
+  });
   return songs;
 };
 
 const sendSongResponse = (res: Response, songs: Song[]) => {
-  res.status(200).json({songs});
+  res.status(200).json({ songs });
 };
 
 export { createSongResponse, sendSongResponse };
