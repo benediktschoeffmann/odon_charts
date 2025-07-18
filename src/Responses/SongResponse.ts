@@ -7,13 +7,16 @@ type Song = z.infer<typeof Song>
 
 const createSongResponse = (result: any) => {
   const songs: Song[] = result.map((row: any) => {
-    const artistsNames: string[] = row.artists ? row.artists.split(",") : [];
-    const artists: Artist[] = artistsNames.map((artistName) =>
-      Artist.parse({
-        name: artistName,
-        nationality: row.nationality,
-      })
-    );
+    const artistEnteries = row.artistsWithNationalities ? row.artistsWithNationalities.split(",").map((entry: any) => entry.trim()) : [];
+    //const artistsNames: string[] = row.artists ? row.artists.split(",") : [];
+    //const artistsNationalities: string[] = row.nationalities ? row.nationalities.split(",") : [];
+    const artists: Artist[] = artistEnteries.map((entry: any) => {
+      const [name, nationality] = entry.split("(").map((part: any) => part.trim());
+      return Artist.parse({
+        name: name,
+        nationality: nationality?.replace(")", "") || null
+      });
+    });
     return Song.parse({
       title: row.title,
       releaseYear: new Date(row.releaseYear).getFullYear(),

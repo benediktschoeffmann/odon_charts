@@ -8,9 +8,10 @@ import * as z from "zod/v4";
 //};
 
 const ChartSong = z.object({
-  song: Song,
-  year: z.number()
-  }
+  week: z.number(),
+  year: z.number(),
+  song: Song
+}
 )
 
 export default ChartSong

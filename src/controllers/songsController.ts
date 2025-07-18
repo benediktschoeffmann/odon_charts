@@ -19,8 +19,8 @@ const generalSongController = (
     .then((conn) => {
       conn
         .query(
-          "SELECT songs.title, songs.releaseYear, nationalities.description AS nationality, " +
-            "GROUP_CONCAT(DISTINCT artists.name) as artists, " +
+          "SELECT songs.title, songs.releaseYear, " +
+            "GROUP_CONCAT( DISTINCT CONCAT(artists.name, ' (', nationalities.description, ')') ORDER BY artists.name ) as artistsWithNationalities," +
             "GROUP_CONCAT(DISTINCT genres.description) as genres FROM songs " +
             "INNER JOIN songs_artists ON songs.ID = songs_artists.songID " +
             "INNER JOIN artists ON songs_artists.artistID = artists.ID " +
@@ -120,7 +120,7 @@ const getSongsFromNationalityController = (
   generalSongController(
     res,
     dbpool,
-    "WHERE LOWER(nationalities.description) =  LOWER(?)",
+    "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID INNER JOIN nationalities ON artists.nationalityID = nationalities.ID WHERE LOWER(nationalities.description) = LOWER(?))",
     [nationality]
   );
 };
