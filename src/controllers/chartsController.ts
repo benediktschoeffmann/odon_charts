@@ -58,3 +58,7 @@ const generalChartController = (
 const getAllChartsController = (res: Response, dbpool: Pool) => {
   generalChartController(res, dbpool, "");
 }
+
+export {
+  getAllChartsController
+}
