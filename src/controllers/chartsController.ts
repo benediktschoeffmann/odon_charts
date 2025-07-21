@@ -28,7 +28,7 @@ const generalChartController = (
             "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
             "INNER JOIN nationalities ON artists.nationalityID = nationalities.ID " +
             whereStatement +
-            " GROUP BY charts.year, charts.week;",
+            " GROUP BY charts.year, charts.week, songs.title;",
           searchPara && searchPara
         )
         .then((result) => {
