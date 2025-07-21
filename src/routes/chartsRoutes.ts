@@ -58,6 +58,27 @@ generalChartRoute("/genre", getChartsFromGenreController, "genre");
 generalChartRoute("/nationality", getChartsFromNationalityController, "nationality");
 generalChartRoute("/chartYear", getChartsFromChartYearController, "chartYear");
 
+router.get(baseUrl + "/chartYear/:chartYear/chartWeek/:chartWeek", (req, res) => {
+  const chartYear = parseInt(req.params.chartYear, 10);
+  const chartWeek = parseInt(req.params.chartWeek, 10);
+  const currentYear = new Date().getFullYear();
+  if (
+    !chartYear ||
+    !chartWeek ||
+    !Number.isInteger(chartYear) ||
+    !Number.isInteger(chartWeek) ||
+    chartYear < 1900 ||
+    chartYear > currentYear ||
+    chartWeek > 53 ||
+    chartWeek < 1
+  ) {
+    sendErrorResponse(res, 400);
+    return
+  }
+
+  getChartsFromChartYearWeekController(res, dbpool, chartYear, chartWeek)
+});
+
 router.use(baseUrl, (req, res) => {
   res.status(400).json({
     message: "Parameter isn't set",
