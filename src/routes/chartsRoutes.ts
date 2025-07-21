@@ -2,7 +2,16 @@ import { Router } from "express";
 import dbpool from "../../config/database";
 import sendErrorResponse from "../responses/errorResponse";
 import countryCodes from "../../config/countryCodes";
-import { getAllChartsController, getChartsFromArtistController, getChartsFromChartYearController, getChartsFromGenreController, getChartsFromNationalityController, getChartsFromReleaseYearController, getChartsFromTitleController } from "../controllers/chartsController";
+import {
+  getAllChartsController,
+  getChartsFromArtistController,
+  getChartsFromChartYearController,
+  getChartsFromGenreController,
+  getChartsFromNationalityController,
+  getChartsFromReleaseYearController,
+  getChartsFromTitleController,
+  getChartsFromChartYearWeekController
+} from "../controllers/chartsController";
 
 const router: Router = require("express").Router();
 const baseUrl: string = "/api/charts";
