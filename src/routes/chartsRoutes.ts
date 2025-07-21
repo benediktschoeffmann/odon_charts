@@ -13,27 +13,32 @@ const generalChartRoute = (
   searchParaDesc?: string,
   ifStatement?: (para: any) => boolean
 ) => {
-  router.get(baseUrl + url, (req, res) => {
-      
-    let searchPara: string | number | undefined = undefined;
-    if (searchParaDesc) {
-      if (!req.params[searchParaDesc] || req.params[searchParaDesc] === null) {
-        sendErrorResponse(res, 400);
-        return;
+  router.get(
+    baseUrl + url + (searchParaDesc ? "/:" + searchParaDesc : ""),
+    (req, res) => {
+      let searchPara: string | number | undefined = undefined;
+      if (searchParaDesc) {
+        if (
+          !req.params[searchParaDesc] ||
+          req.params[searchParaDesc] === null
+        ) {
+          sendErrorResponse(res, 400);
+          return;
+        }
+        searchPara = decodeURI(req.params[searchParaDesc]);
+        if (!isNaN(+searchPara)) {
+          searchPara = Number(searchPara);
+        }
+        if (ifStatement && ifStatement(searchPara)) {
+          sendErrorResponse(res, 400);
+          return;
+        }
       }
-      searchPara = decodeURI(req.params[searchParaDesc]);
-      if (!isNaN(+searchPara)) {
-        searchPara = Number(searchPara);
-      }
-      if (ifStatement && ifStatement(searchPara)) {
-        sendErrorResponse(res, 400);
-        return;
-      }
-    }
 
-    controller(res, dbpool, searchPara && searchPara);
-    })
-};
+      controller(res, dbpool, searchPara && searchPara);
+    }
+  );
+};;
 
 generalChartRoute("", getAllChartsController);
 

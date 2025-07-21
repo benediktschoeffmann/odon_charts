@@ -21,7 +21,7 @@ const generalSongRoute = (
   searchParaDesc?: string,
   ifStatement?: (para: any) => boolean
 ) => {
-  router.get(baseUrl + url, (req, res) => {
+  router.get(baseUrl + url + (searchParaDesc ? "/:" + searchParaDesc : ""), (req, res) => {
     let searchPara: string | number | undefined = undefined;
     if (searchParaDesc) {
       if (!req.params[searchParaDesc] || req.params[searchParaDesc] === null) {
