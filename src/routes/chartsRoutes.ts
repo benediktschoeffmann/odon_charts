@@ -2,7 +2,7 @@ import { Router } from "express";
 import dbpool from "../../config/database";
 import sendErrorResponse from "../responses/errorResponse";
 import countryCodes from "../../config/countryCodes";
-import { getAllChartsController } from "../controllers/chartsController";
+import { getAllChartsController, getChartsFromArtistController, getChartsFromChartYearController, getChartsFromGenreController, getChartsFromNationalityController, getChartsFromReleaseYearController, getChartsFromTitleController } from "../controllers/chartsController";
 
 const router: Router = require("express").Router();
 const baseUrl: string = "/api/charts";
@@ -41,5 +41,18 @@ const generalChartRoute = (
 };;
 
 generalChartRoute("", getAllChartsController);
+
+generalChartRoute("/title", getChartsFromTitleController, "title");
+generalChartRoute("/releaseYear", getChartsFromReleaseYearController, "releaseYear");
+generalChartRoute("/artist", getChartsFromArtistController, "artist");
+generalChartRoute("/genre", getChartsFromGenreController, "genre");
+generalChartRoute("/nationality", getChartsFromNationalityController, "nationality");
+generalChartRoute("/chartYear", getChartsFromChartYearController, "chartYear");
+
+router.use(baseUrl, (req, res) => {
+  res.status(400).json({
+    message: "Parameter isn't set",
+  });
+});
 
 module.exports = router;
