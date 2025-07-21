@@ -6,6 +6,7 @@ const app: Application = express();
 const songsRouter = require("./routes/songsRoutes");
 const chartRouter = require("./routes/chartsRoutes");
 import limiter from "../config/rateLimiter";
+import { weekNumber } from "weeknumber";
 
 app.use(chartRouter);
 app.use(songsRouter);
