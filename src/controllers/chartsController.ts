@@ -56,4 +56,68 @@ const getAllChartsController = (res: Response, dbpool: Pool) => {
   generalChartController(res, dbpool, "");
 };
 
-export { getAllChartsController };
+const getChartsFromTitleController = (res: Response,dbpool: Pool,songTitle: string) => {
+  generalChartController(res, dbpool, "WHERE LOWER (songs.title) = LOWER (?)", [
+    songTitle,
+  ]);
+};
+
+const getChartsFromReleaseYearController = (res: Response,dbpool: Pool,releaseYear: number) => {
+  generalChartController(
+    res,
+    dbpool,
+    "WHERE songs.releaseYear BETWEEN ? AND ?",
+    [`${releaseYear}-01-01`, `${releaseYear}-12-31`]
+  );
+};
+
+const getChartsFromArtistController = (res: Response,dbpool: Pool,artistName: string) => {
+  generalChartController(
+    res,
+    dbpool,
+    "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID WHERE LOWER(artists.name) = LOWER(?))",
+    [artistName]
+  );
+};
+
+const getChartsFromGenreController = (res: Response, dbpool: Pool, genre: string) => {
+  generalChartController(
+    res,
+    dbpool,
+    "WHERE songs.ID IN (SELECT songs_genres.songID FROM songs_genres INNER JOIN genres ON songs_genres.genreID = genres.ID WHERE LOWER(genres.description) = LOWER(?))",
+    [genre]
+  );
+};
+
+const getChartsFromNationalityController = (res: Response, dbpool: Pool, nationality: string) => {
+  generalChartController(
+    res,
+    dbpool,
+    "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID INNER JOIN nationalities ON artists.nationalityID = nationalities.ID WHERE LOWER(nationalities.description) = LOWER(?))",
+    [nationality]
+  );
+}
+
+const getChartsFromChartYearController = (res: Response, dbpool: Pool, chartYear: number) => {
+  generalChartController(res, dbpool, " WHERE charts.year = ?", [chartYear]);
+}
+
+const getChartsFromChartYearWeekController = (res: Response, dbpool: Pool, chartYear: number, chartWeek: number) => {
+  generalChartController(
+    res,
+    dbpool,
+    " WHERE charts.year = ? AND charts.week = ? ",
+    [chartYear, chartWeek]
+  );
+}
+
+export {
+  getAllChartsController,
+  getChartsFromArtistController,
+  getChartsFromChartYearController,
+  getChartsFromChartYearWeekController,
+  getChartsFromGenreController,
+  getChartsFromNationalityController,
+  getChartsFromReleaseYearController,
+  getChartsFromTitleController,
+};

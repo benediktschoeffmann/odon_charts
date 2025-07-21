@@ -70,10 +70,12 @@ const getSongsBetweenYearController = (
   firstYear: number,
   lastYear: number
 ) => {
-  generalSongController(res, dbpool, "WHERE  `releaseYear` BETWEEN ? AND ? ", [
-    `${firstYear}-01-01`,
-    `${lastYear}-12-31`,
-  ]);
+  generalSongController(
+    res,
+    dbpool,
+    "WHERE songs.releaseYear BETWEEN ? AND ? ",
+    [`${firstYear}-01-01`, `${lastYear}-12-31`]
+  );
 };
 
 const getSongsFromYearController = (
