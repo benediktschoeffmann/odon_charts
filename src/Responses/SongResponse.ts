@@ -19,7 +19,7 @@ const createSongResponse = (result: any) => {
     });
     return Song.parse({
       title: row.title,
-      releaseYear: new Date(row.releaseYear).getFullYear(),
+      releaseYear: row.releaseYear,
       genres: row.genres ? row.genres.split(",") : [],
       artists: artists,
     });
