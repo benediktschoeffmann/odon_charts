@@ -5,8 +5,6 @@ import {
   sendChartResponse,
 } from "../responses/chartResponse";
 import { Response } from "express";
-import dbpool from '../../config/database';
-
 
 const generalChartController = (
   res: Response,
@@ -54,11 +52,8 @@ const generalChartController = (
     });
 };
 
-
 const getAllChartsController = (res: Response, dbpool: Pool) => {
   generalChartController(res, dbpool, "");
-}
+};
 
-export {
-  getAllChartsController
-}
+export { getAllChartsController };

@@ -4,8 +4,10 @@ const PORT = process.env.PORT || 9000;
 
 const app: Application = express();
 const songsRouter = require("./routes/songsRoutes");
+const chartRouter = require("./routes/chartsRoutes");
 import limiter from "../config/rateLimiter";
 
+app.use(chartRouter);
 app.use(songsRouter);
 app.use("/api/", limiter);
 
