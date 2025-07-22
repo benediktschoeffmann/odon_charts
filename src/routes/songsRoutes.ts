@@ -51,11 +51,11 @@ const generalSongRoute = (
 generalSongRoute("", getAllSongsController);
 generalSongRoute("/title", getSongsFromTitleController, "title", (para) => {
   const paraString: string = para.toString();
-  return !(paraString.length < 200);
+  return (paraString.length > 100);
 });
 generalSongRoute("/year", getSongsFromYearController, "year", (para) => {
   const currentYear = new Date().getFullYear();
-  return !Number.isInteger(para) || !(500 < para) || !(para < currentYear);
+  return !Number.isInteger(para) || (500 > para) || (para > currentYear);
 });
 generalSongRoute("/artist", getSongsFromArtistController, "artist");
 generalSongRoute("/genre", getSongsFromGenreController, "genre");
@@ -64,7 +64,7 @@ generalSongRoute(
   getSongsFromNationalityController,
   "nationality",
   (para) => {
-    return !para || para.length > 2 || !countryCodes.includes(para);
+    return !para || para.length != 2 || !countryCodes.includes(para);
   }
 );
 

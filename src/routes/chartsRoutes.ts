@@ -11,10 +11,12 @@ import {
   getChartsFromReleaseYearController,
   getChartsFromTitleController,
   getChartsFromChartYearWeekController,
+  getChartsFromPositionController
 } from "../controllers/chartsController";
 
 const router: Router = require("express").Router();
 const baseUrl: string = "/api/charts";
+const currentYear = new Date().getFullYear();
 
 const generalChartRoute = (
   url: string,
@@ -52,22 +54,27 @@ const generalChartRoute = (
 generalChartRoute("", getAllChartsController);
 
 generalChartRoute("/title", getChartsFromTitleController, "title");
-generalChartRoute(
-  "/releaseYear",
-  getChartsFromReleaseYearController,
-  "releaseYear"
-);
+generalChartRoute("/releaseYear", getChartsFromReleaseYearController, "releaseYear", (para) => {
+return !Number.isInteger(para) || (para < 500) || (para > currentYear)
+});
 generalChartRoute("/artist", getChartsFromArtistController, "artist");
 generalChartRoute("/genre", getChartsFromGenreController, "genre");
-generalChartRoute("/nationality", getChartsFromNationalityController, "nationality");
-generalChartRoute("/chartYear", getChartsFromChartYearController, "chartYear");
+generalChartRoute("/nationality", getChartsFromNationalityController, "nationality", (para) => {
+  return (para.length != 2) || !countryCodes.includes(para);
+});
+generalChartRoute("/year", getChartsFromChartYearController, "year", (para) => {
+  return !Number.isInteger(para) || (para < 1900) || (para > currentYear)
+});
+generalChartRoute("/position", getChartsFromPositionController, "position", (para) => {
+  return !Number.isInteger(para) || (para < 1) || (para > 100)
+})
 
 router.get(
-  baseUrl + "/chartYear/:chartYear/chartWeek/:chartWeek",
+  baseUrl + "/year/:year/week/:week",
   (req, res) => {
-    const chartYear = parseInt(req.params.chartYear, 10);
-    const chartWeek = parseInt(req.params.chartWeek, 10);
-    const currentYear = new Date().getFullYear();
+    const chartYear = parseInt(req.params.year, 10);
+    const chartWeek = parseInt(req.params.week, 10);
+    
     if (
       !chartYear ||
       !chartWeek ||
