@@ -10,6 +10,7 @@ import * as z from "zod/v4";
 const ChartSong = z.object({
   week: z.number(),
   year: z.number(),
+  position: z.number(),
   song: Song
 }
 )

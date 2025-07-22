@@ -17,7 +17,7 @@ const generalChartController = (
     .then((conn) => {
       conn
         .query(
-          "SELECT charts.year AS chartYear, charts.week AS chartWeek, " +
+          "SELECT charts.year AS chartYear, charts.week AS chartWeek, charts.position AS chartPosition, " +
             "songs.title AS title, songs.releaseYear AS releaseYear, " +
             "GROUP_CONCAT( DISTINCT CONCAT(artists.name, ' (', nationalities.description, ')') ORDER BY artists.name ) as artistsWithNationalities," +
             "GROUP_CONCAT(DISTINCT genres.description) as genres FROM charts " +
@@ -28,7 +28,7 @@ const generalChartController = (
             "INNER JOIN genres genres ON songs_genres.genreID = genres.ID " +
             "INNER JOIN nationalities ON artists.nationalityID = nationalities.ID " +
             whereStatement +
-            " GROUP BY charts.year, charts.week, songs.title;",
+            " GROUP BY charts.year, charts.week, charts.position, songs.title;",
           searchPara && searchPara
         )
         .then((result) => {
@@ -56,13 +56,21 @@ const getAllChartsController = (res: Response, dbpool: Pool) => {
   generalChartController(res, dbpool, "");
 };
 
-const getChartsFromTitleController = (res: Response,dbpool: Pool,songTitle: string) => {
+const getChartsFromTitleController = (
+  res: Response,
+  dbpool: Pool,
+  songTitle: string
+) => {
   generalChartController(res, dbpool, "WHERE LOWER (songs.title) = LOWER (?)", [
     songTitle,
   ]);
 };
 
-const getChartsFromReleaseYearController = (res: Response,dbpool: Pool,releaseYear: number) => {
+const getChartsFromReleaseYearController = (
+  res: Response,
+  dbpool: Pool,
+  releaseYear: number
+) => {
   generalChartController(
     res,
     dbpool,
@@ -71,7 +79,11 @@ const getChartsFromReleaseYearController = (res: Response,dbpool: Pool,releaseYe
   );
 };
 
-const getChartsFromArtistController = (res: Response,dbpool: Pool,artistName: string) => {
+const getChartsFromArtistController = (
+  res: Response,
+  dbpool: Pool,
+  artistName: string
+) => {
   generalChartController(
     res,
     dbpool,
@@ -80,7 +92,11 @@ const getChartsFromArtistController = (res: Response,dbpool: Pool,artistName: st
   );
 };
 
-const getChartsFromGenreController = (res: Response, dbpool: Pool, genre: string) => {
+const getChartsFromGenreController = (
+  res: Response,
+  dbpool: Pool,
+  genre: string
+) => {
   generalChartController(
     res,
     dbpool,
@@ -89,27 +105,40 @@ const getChartsFromGenreController = (res: Response, dbpool: Pool, genre: string
   );
 };
 
-const getChartsFromNationalityController = (res: Response, dbpool: Pool, nationality: string) => {
+const getChartsFromNationalityController = (
+  res: Response,
+  dbpool: Pool,
+  nationality: string
+) => {
   generalChartController(
     res,
     dbpool,
     "WHERE songs.ID IN (SELECT songs_artists.songID FROM songs_artists INNER JOIN artists ON songs_artists.artistID = artists.ID INNER JOIN nationalities ON artists.nationalityID = nationalities.ID WHERE LOWER(nationalities.description) = LOWER(?))",
     [nationality]
   );
-}
+};
 
-const getChartsFromChartYearController = (res: Response, dbpool: Pool, chartYear: number) => {
+const getChartsFromChartYearController = (
+  res: Response,
+  dbpool: Pool,
+  chartYear: number
+) => {
   generalChartController(res, dbpool, " WHERE charts.year = ?", [chartYear]);
-}
+};
 
-const getChartsFromChartYearWeekController = (res: Response, dbpool: Pool, chartYear: number, chartWeek: number) => {
+const getChartsFromChartYearWeekController = (
+  res: Response,
+  dbpool: Pool,
+  chartYear: number,
+  chartWeek: number
+) => {
   generalChartController(
     res,
     dbpool,
     " WHERE charts.year = ? AND charts.week = ? ",
     [chartYear, chartWeek]
   );
-}
+};
 
 export {
   getAllChartsController,

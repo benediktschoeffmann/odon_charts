@@ -21,37 +21,38 @@ const generalSongRoute = (
   searchParaDesc?: string,
   ifStatement?: (para: any) => boolean
 ) => {
-  router.get(baseUrl + url + (searchParaDesc ? "/:" + searchParaDesc : ""), (req, res) => {
-    let searchPara: string | number | undefined = undefined;
-    if (searchParaDesc) {
-      if (!req.params[searchParaDesc] || req.params[searchParaDesc] === null) {
-        sendErrorResponse(res, 400);
-        return;
+  router.get(
+    baseUrl + url + (searchParaDesc ? "/:" + searchParaDesc : ""),
+    (req, res) => {
+      let searchPara: string | number | undefined = undefined;
+      if (searchParaDesc) {
+        if (
+          !req.params[searchParaDesc] ||
+          req.params[searchParaDesc] === null
+        ) {
+          sendErrorResponse(res, 400);
+          return;
+        }
+        searchPara = decodeURI(req.params[searchParaDesc]);
+        if (!isNaN(+searchPara)) {
+          searchPara = Number(searchPara);
+        }
+        if (ifStatement && ifStatement(searchPara)) {
+          sendErrorResponse(res, 400);
+          return;
+        }
       }
-      searchPara = decodeURI(req.params[searchParaDesc]);
-      if (!isNaN(+searchPara)) {
-        searchPara = Number(searchPara);
-      }
-      if (ifStatement && ifStatement(searchPara)) {
-        sendErrorResponse(res, 400);
-        return;
-      }
-    }
 
-    controller(res, dbpool, searchPara && searchPara);
-  });
+      controller(res, dbpool, searchPara && searchPara);
+    }
+  );
 };
 
 generalSongRoute("", getAllSongsController);
-generalSongRoute(
-  "/title",
-  getSongsFromTitleController,
-  "title",
-  (para) => {
-    const paraString: string = para.toString();
-    return !(paraString.length < 200);
-  }
-);
+generalSongRoute("/title", getSongsFromTitleController, "title", (para) => {
+  const paraString: string = para.toString();
+  return !(paraString.length < 200);
+});
 generalSongRoute("/year", getSongsFromYearController, "year", (para) => {
   const currentYear = new Date().getFullYear();
   return !Number.isInteger(para) || !(500 < para) || !(para < currentYear);

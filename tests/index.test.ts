@@ -1,3 +1,4 @@
+import { title } from "process";
 import app from "../src/index";
 const supertest = require("supertest");
 const requestWithSupertest = supertest(app);
@@ -5,6 +6,7 @@ const requestWithSupertest = supertest(app);
 const generalHappyCaseTest = (
   testDescription: string,
   requestRoute: string,
+  propertyValue: string,
   containValue?: object,
   antiContainValue?: object
 ) => {
@@ -12,21 +14,38 @@ const generalHappyCaseTest = (
     const res = await requestWithSupertest.get(requestRoute);
     expect(res.status).toEqual(200);
     expect(res.type).toEqual(expect.stringContaining("json"));
-    expect(res.body).toHaveProperty("songs");
+    expect(res.body).toHaveProperty(propertyValue);
 
     if (containValue) {
-      expect(res.body.songs).toEqual(
+      expect(res.body[propertyValue]).toEqual(
         expect.arrayContaining(
-          res.body.songs.map((song: any) => {
-            expect(song).toEqual(expect.objectContaining(containValue));
-            if (antiContainValue) expect(song).toEqual(expect.not.objectContaining(antiContainValue));
-            return song;
+          res.body[propertyValue].map((data: any) => {
+            expect(data).toEqual(expect.objectContaining(containValue));
+            if (antiContainValue) expect(data).toEqual(expect.not.objectContaining(antiContainValue));
+            return data;
           })
         )
       );
     }
   });
 };
+
+const generalHappySongCaseTest = (testDescription: string, requestRoute: string, containValue?: object, antiContainValue?: object) => {
+  generalHappyCaseTest(testDescription, requestRoute, "songs", containValue, antiContainValue)
+}
+  
+const generalHappyChartCaseTest = (testDescription: string,
+  requestRoute: string,
+  containValue?: object,
+  antiContainValue?: object) => {
+  generalHappyCaseTest(
+    testDescription,
+    requestRoute,
+    "charts",
+    containValue,
+    antiContainValue
+  );
+}
 
 const generalErrorCaseTest = (
   testDescription: string,
@@ -49,54 +68,76 @@ const generalErrorCaseTest = (
 
 describe("Testing index file", () => {
   describe("Happy cases", () => {
-    generalHappyCaseTest(
-      "GET /api/songs should return all songs",
-      "/api/songs"
-    );
-    generalHappyCaseTest(
-      "GET /api/songs/title/:title should return songs with specific title",
-      "/api/songs/title/We%20Will%20Rock%20you",
-      { title: "We Will Rock you" },
-      { title: "Awarakadawara" }
-    );
-    generalHappyCaseTest(
-      "GET /api/songs/year/:year should return all songs from specific year",
-      "/api/songs/year/1970",
-      { releaseYear: 1970 },
-      { releaseYear: 2017}
-    );
-    generalHappyCaseTest(
-      "GET /api/songs/artist/:artist should retuntn all songs from specific artist",
-      "/api/songs/artist/falco",
-      {
-        artists: expect.arrayContaining([
-          expect.objectContaining({
-            name: "Falco",
-          }),
-          expect.not.objectContaining({
-            name: "Ernst Molden",
-          }),
-        ]),
-      }
-    );
-    generalHappyCaseTest(
-      "GET /api/songs/genre/:genre should return all songs from specific genre",
-      "/api/songs/genre/pop",
-      {
-        genres: expect.arrayContaining(["Pop"]),
-      }
-    );
-    generalHappyCaseTest(
-      "GET /api/songs/nationality/:nationality should return all songs where artist has specific nationality",
-      "/api/songs/nationality/AT",
-      {
-        artists: expect.arrayContaining([
-          expect.objectContaining({
-            nationality: "AT",
-          }),
-        ]),
-      }
-    );
+
+    describe("Song cases", () => {
+      generalHappySongCaseTest(
+        "GET /api/songs should return all songs",
+        "/api/songs"
+      );
+      generalHappySongCaseTest(
+        "GET /api/songs/title/:title should return songs with specific title",
+        "/api/songs/title/We%20Will%20Rock%20you",
+        { title: "We Will Rock you" },
+        { title: "Awarakadawara" }
+      );
+      generalHappySongCaseTest(
+        "GET /api/songs/year/:year should return all songs from specific year",
+        "/api/songs/year/1970",
+        { releaseYear: 1970 },
+        { releaseYear: 2017 }
+      );
+      generalHappySongCaseTest(
+        "GET /api/songs/artist/:artist should retuntn all songs from specific artist",
+        "/api/songs/artist/falco",
+        {
+          artists: expect.arrayContaining([
+            expect.objectContaining({
+              name: "Falco",
+            }),
+            expect.not.objectContaining({
+              name: "Ernst Molden",
+            }),
+          ]),
+        }
+      );
+      generalHappySongCaseTest(
+        "GET /api/songs/genre/:genre should return all songs from specific genre",
+        "/api/songs/genre/pop",
+        {
+          genres: expect.arrayContaining(["Pop"]),
+        }
+      );
+      generalHappySongCaseTest(
+        "GET /api/songs/nationality/:nationality should return all songs where artist has specific nationality",
+        "/api/songs/nationality/AT",
+        {
+          artists: expect.arrayContaining([
+            expect.objectContaining({
+              nationality: "AT",
+            }),
+          ]),
+        }
+      );
+    })
+    
+    describe("Chart cases", () => {
+      generalHappyChartCaseTest(
+        "GET /api/charts should return all songs",
+        "/api/charts"
+      );
+      generalHappyChartCaseTest(
+        "GET /api/charts/title/:title should return chart with title",
+        "/api/charts/title/Jupiter",
+        {
+          song: expect.objectContaining({ title: "Jupiter" }),
+        },
+        {
+          song: expect.objectContaining({ title: "Ordinary" }),
+        }
+      );
+      
+    })
+
   });
 
   describe("Error cases", () => {

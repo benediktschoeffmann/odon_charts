@@ -26,7 +26,8 @@ const createChartResponse = (result: any) => {
       return Chart.parse({
         week: row.chartWeek,
         year: row.chartYear,
-        song: song
+        position: row.chartPosition,
+        song: song,
       });
   });
     return charts;

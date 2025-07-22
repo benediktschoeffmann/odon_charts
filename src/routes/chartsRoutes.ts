@@ -10,7 +10,7 @@ import {
   getChartsFromNationalityController,
   getChartsFromReleaseYearController,
   getChartsFromTitleController,
-  getChartsFromChartYearWeekController
+  getChartsFromChartYearWeekController,
 } from "../controllers/chartsController";
 
 const router: Router = require("express").Router();
@@ -47,37 +47,44 @@ const generalChartRoute = (
       controller(res, dbpool, searchPara && searchPara);
     }
   );
-};;
+};
 
 generalChartRoute("", getAllChartsController);
 
 generalChartRoute("/title", getChartsFromTitleController, "title");
-generalChartRoute("/releaseYear", getChartsFromReleaseYearController, "releaseYear");
+generalChartRoute(
+  "/releaseYear",
+  getChartsFromReleaseYearController,
+  "releaseYear"
+);
 generalChartRoute("/artist", getChartsFromArtistController, "artist");
 generalChartRoute("/genre", getChartsFromGenreController, "genre");
 generalChartRoute("/nationality", getChartsFromNationalityController, "nationality");
 generalChartRoute("/chartYear", getChartsFromChartYearController, "chartYear");
 
-router.get(baseUrl + "/chartYear/:chartYear/chartWeek/:chartWeek", (req, res) => {
-  const chartYear = parseInt(req.params.chartYear, 10);
-  const chartWeek = parseInt(req.params.chartWeek, 10);
-  const currentYear = new Date().getFullYear();
-  if (
-    !chartYear ||
-    !chartWeek ||
-    !Number.isInteger(chartYear) ||
-    !Number.isInteger(chartWeek) ||
-    chartYear < 1900 ||
-    chartYear > currentYear ||
-    chartWeek > 53 ||
-    chartWeek < 1
-  ) {
-    sendErrorResponse(res, 400);
-    return
-  }
+router.get(
+  baseUrl + "/chartYear/:chartYear/chartWeek/:chartWeek",
+  (req, res) => {
+    const chartYear = parseInt(req.params.chartYear, 10);
+    const chartWeek = parseInt(req.params.chartWeek, 10);
+    const currentYear = new Date().getFullYear();
+    if (
+      !chartYear ||
+      !chartWeek ||
+      !Number.isInteger(chartYear) ||
+      !Number.isInteger(chartWeek) ||
+      chartYear < 1900 ||
+      chartYear > currentYear ||
+      chartWeek > 53 ||
+      chartWeek < 1
+    ) {
+      sendErrorResponse(res, 400);
+      return;
+    }
 
-  getChartsFromChartYearWeekController(res, dbpool, chartYear, chartWeek)
-});
+    getChartsFromChartYearWeekController(res, dbpool, chartYear, chartWeek);
+  }
+);
 
 router.use(baseUrl, (req, res) => {
   res.status(400).json({

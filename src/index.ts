@@ -6,7 +6,7 @@ const app: Application = express();
 const songsRouter = require("./routes/songsRoutes");
 const chartRouter = require("./routes/chartsRoutes");
 import limiter from "../config/rateLimiter";
-import { weekNumber } from "weeknumber";
+import { weekNumberYear } from "weeknumber";
 
 app.use(chartRouter);
 app.use(songsRouter);
@@ -16,4 +16,5 @@ app.listen(PORT, () => {
   console.log("Server is running on port", PORT);
 });
 
+console.log(weekNumberYear(new Date(2024, 11, 31)));
 export default app;
