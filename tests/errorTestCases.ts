@@ -52,6 +52,24 @@ const error400Tests = describe("400 Error Cases", () => {
     400,
     "Invalid request"
   );
+  generalErrorCaseTest(
+    "Should return 400 when position parameter is over 100",
+    "/api/charts/position/101",
+    400,
+    "Invalid request"
+  )
+  generalErrorCaseTest(
+    "Should return 400 when position parameter is under 1",
+    "/api/charts/position/-1",
+    400,
+    "Invalid request"
+  );
+  generalErrorCaseTest(
+    "Should return 400 when week parameter is over 53",
+    "/api/charts/year/2025/week/54",
+    400,
+    "Invalid request"
+  )
 });
 
 export {error400Tests, error404Tests}
