@@ -29,6 +29,28 @@ const chartsTests = describe("Chart cases", () => {
     }
   );
   generalHappyChartCaseTest(
+    "GET /api/charts/genre should return charts with specific genre",
+    "/api/charts/genre/rap",
+    {
+      song: expect.objectContaining({
+        genres: expect.arrayContaining(["Rap"]),
+      }),
+    }
+  );
+  generalHappyChartCaseTest(
+    "GET /api/charts/nationality should return charts where one artist has specific nationality",
+    "/api/charts/nationality/AT",
+    {
+      song: expect.objectContaining({
+        artists: expect.arrayContaining([
+          expect.objectContaining({
+            nationality: "AT",
+          }),
+        ]),
+      }),
+    }
+  );
+  generalHappyChartCaseTest(
     "GET /api/charts/year/:year should return charts from year",
     "/api/charts/year/2025",
     { year: 2025 },
