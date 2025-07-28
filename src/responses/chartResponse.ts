@@ -9,12 +9,12 @@ type Chart = z.infer<typeof Chart>;
 
 const createChartResponse = (result: any) => {
   const charts: Chart[] = result.map((row: any) => {
-    const artistEnteries = row.artistsWithNationalities
+    const artistEntries = row.artistsWithNationalities
       ? row.artistsWithNationalities
           .split(",")
           .map((entry: any) => entry.trim())
       : [];
-    const artists: Artist[] = artistEnteries.map((entry: any) => {
+    const artists: Artist[] = artistEntries.map((entry: any) => {
       const [name, nationality] = entry
         .split("(")
         .map((part: any) => part.trim());
