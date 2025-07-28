@@ -13,7 +13,7 @@ import {
 } from "../controllers/songsController";
 
 const router: Router = require("express").Router();
-const baseUrl: string = "/api/songs";
+const baseUrl: string = "/";
 
 const generalSongRoute = (
   url: string,
@@ -49,18 +49,18 @@ const generalSongRoute = (
 };
 
 generalSongRoute("", getAllSongsController);
-generalSongRoute("/title", getSongsFromTitleController, "title", (para) => {
+generalSongRoute("title", getSongsFromTitleController, "title", (para) => {
   const paraString: string = para.toString();
   return paraString.length > 100;
 });
-generalSongRoute("/year", getSongsFromYearController, "year", (para) => {
+generalSongRoute("year", getSongsFromYearController, "year", (para) => {
   const currentYear = new Date().getFullYear();
   return !Number.isInteger(para) || 500 > para || para > currentYear;
 });
-generalSongRoute("/artist", getSongsFromArtistController, "artist");
-generalSongRoute("/genre", getSongsFromGenreController, "genre");
+generalSongRoute("artist", getSongsFromArtistController, "artist");
+generalSongRoute("genre", getSongsFromGenreController, "genre");
 generalSongRoute(
-  "/nationality",
+  "nationality",
   getSongsFromNationalityController,
   "nationality",
   (para) => {
@@ -68,7 +68,7 @@ generalSongRoute(
   }
 );
 
-router.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
+router.get(baseUrl + "betweenYear/:firstYear/:lastYear", (req, res) => {
   const firstYear = parseInt(req.params.firstYear, 10);
   const lastYear = parseInt(req.params.lastYear, 10);
   const currentYear = new Date().getFullYear();
@@ -93,12 +93,6 @@ router.get("/api/songs/betweenYear/:firstYear/:lastYear", (req, res) => {
 router.use(baseUrl, (req, res) => {
   res.status(400).json({
     message: "Parameter isn't set",
-  });
-});
-
-router.use("/", (req, res) => {
-  res.status(404).json({
-    message: "Endpoint not found",
   });
 });
 

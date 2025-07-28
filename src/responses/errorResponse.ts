@@ -6,7 +6,11 @@ const ErrorMessages: Record<number, string> = {
   500: "Server error",
 };
 
-const sendErrorResponse = (res: Response, statusCode: keyof typeof ErrorMessages, errorDescription?: any) => {
+const sendErrorResponse = (
+  res: Response,
+  statusCode: keyof typeof ErrorMessages,
+  errorDescription?: any
+) => {
   errorDescription && console.log(errorDescription);
   const errorMessage = ErrorMessages[statusCode] || "An Error occured";
 
@@ -21,6 +25,5 @@ const sendErrorResponse = (res: Response, statusCode: keyof typeof ErrorMessages
     });
   }
 };
-
 
 export default sendErrorResponse;
