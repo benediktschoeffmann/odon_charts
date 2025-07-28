@@ -15,7 +15,7 @@ import {
 } from "../controllers/chartsController";
 
 const router: Router = require("express").Router();
-const baseUrl: string = "/api/charts";
+const baseUrl: string = "/";
 const currentYear = new Date().getFullYear();
 
 const generalChartRoute = (
@@ -53,24 +53,24 @@ const generalChartRoute = (
 
 generalChartRoute("", getAllChartsController);
 
-generalChartRoute("/title", getChartsFromTitleController, "title");
-generalChartRoute("/releaseYear", getChartsFromReleaseYearController, "releaseYear", (para) => {
+generalChartRoute("title", getChartsFromTitleController, "title");
+generalChartRoute("releaseYear", getChartsFromReleaseYearController, "releaseYear", (para) => {
 return !Number.isInteger(para) || (para < 500) || (para > currentYear)
 });
-generalChartRoute("/artist", getChartsFromArtistController, "artist");
-generalChartRoute("/genre", getChartsFromGenreController, "genre");
-generalChartRoute("/nationality", getChartsFromNationalityController, "nationality", (para) => {
+generalChartRoute("artist", getChartsFromArtistController, "artist");
+generalChartRoute("genre", getChartsFromGenreController, "genre");
+generalChartRoute("nationality", getChartsFromNationalityController, "nationality", (para) => {
   return (para.length != 2) || !countryCodes.includes(para);
 });
-generalChartRoute("/year", getChartsFromChartYearController, "year", (para) => {
+generalChartRoute("year", getChartsFromChartYearController, "year", (para) => {
   return !Number.isInteger(para) || (para < 1900) || (para > currentYear)
 });
-generalChartRoute("/position", getChartsFromPositionController, "position", (para) => {
+generalChartRoute("position", getChartsFromPositionController, "position", (para) => {
   return !Number.isInteger(para) || (para < 1) || (para > 100)
 })
 
 router.get(
-  baseUrl + "/year/:year/week/:week",
+  baseUrl + "year/:year/week/:week",
   (req, res) => {
     const chartYear = parseInt(req.params.year, 10);
     const chartWeek = parseInt(req.params.week, 10);
