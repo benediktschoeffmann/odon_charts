@@ -5,7 +5,7 @@ import {
   sendChartResponse,
 } from "../responses/chartResponse";
 import { Response } from "express";
-import dbpool from '../../config/database';
+import dbpool from "../../config/database";
 
 const generalChartController = (
   res: Response,
@@ -141,9 +141,15 @@ const getChartsFromChartYearWeekController = (
   );
 };
 
-const getChartsFromPositionController = (res: Response, dbpool: Pool, chartPosition: number) => {
-  generalChartController(res, dbpool, " WHERE charts.position = ?", [chartPosition]);
-}
+const getChartsFromPositionController = (
+  res: Response,
+  dbpool: Pool,
+  chartPosition: number
+) => {
+  generalChartController(res, dbpool, " WHERE charts.position = ?", [
+    chartPosition,
+  ]);
+};
 
 export {
   getAllChartsController,
@@ -154,5 +160,5 @@ export {
   getChartsFromNationalityController,
   getChartsFromReleaseYearController,
   getChartsFromTitleController,
-  getChartsFromPositionController
+  getChartsFromPositionController,
 };
