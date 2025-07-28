@@ -1,0 +1,55 @@
+App
+    holt sich bundesligadaten
+    speichert die in die DB
+
+Component
+    fetch / axios als library
+
+interface LeagueFeatcher {
+    public function getLeague();
+    public function getGame(int $gameId);
+    public function getClub(int $clubId);
+}
+
+class LeagueProxy implements LeagueFetcher {
+    public function getLeague(){
+
+    }
+    public function getGame(int $gameId){
+
+    }
+    public function getClub(int $clubId){
+
+    }
+}
+
+class App {
+
+    function __construct(LeagueFetcher $lf) {
+        $tables = $lf.getLeague();
+        db.saveLeague($table);
+
+    }
+
+}
+
+interface RepositoryInterface {
+    public function getById(int $id);
+    public function getByAll();
+}
+
+ArtistRepository implements RepositoryInterface {
+    public function getById(int $id) {}
+    public function getByAll() {}
+
+    public function getArtistsByCountry(string $code) {}
+}
+
+
+DB
+    Pool
+    Repository
+        function saveLeague($table) {
+            // SQL
+        }
+
